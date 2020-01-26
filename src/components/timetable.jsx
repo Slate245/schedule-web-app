@@ -7,6 +7,8 @@ import {
   TableCell
 } from "@material-ui/core";
 
+import Activity from "./activity";
+
 const dateString = "January 6, 2020";
 const schedule = {
   date: new Date(dateString),
@@ -50,6 +52,14 @@ const schedule = {
         begining: new Date(`${dateString} 09:30:00`),
         end: new Date(`${dateString} 09:45:00`)
       }
+    },
+    {
+      id: 4,
+      name: "Встреча с тестом",
+      allocatedTimeslot: {
+        begining: new Date(`${dateString} 10:45:00`),
+        end: new Date(`${dateString} 11:30:00`)
+      }
     }
   ]
 };
@@ -57,11 +67,11 @@ const schedule = {
 const minutesInTimeslot = 15;
 
 const style = {
-  width: "1px",
+  padding: "0",
   borderRight: "1px solid rgba(224, 224, 224, 1)"
 };
 const timeStyle = {
-  width: "1px",
+  width: "80px",
   borderRight: "1px solid rgba(224, 224, 224, 1)"
 };
 
@@ -111,14 +121,19 @@ const mapTimeslots = (currentHour, activities) => {
         minutesInTimeslot;
       if (numberOfSlots > timeslotsInHour - i)
         numberOfSlots = timeslotsInHour - i;
+
       mappedTimeslots.push({
-        content: activityInTimeslot,
+        content: (
+          <Activity
+            name={activityInTimeslot.name}
+            allocatedTimeslot={activityInTimeslot.allocatedTimeslot}
+          />
+        ),
         colspan: numberOfSlots
       });
       i += numberOfSlots - 1;
     }
   }
-  console.log(mappedTimeslots);
 
   return [
     {
@@ -126,22 +141,6 @@ const mapTimeslots = (currentHour, activities) => {
       colspan: 1
     },
     ...mappedTimeslots
-    // {
-    //   content: null,
-    //   colspan: 1
-    // },
-    // {
-    //   content: null,
-    //   colspan: 1
-    // },
-    // {
-    //   content: null,
-    //   colspan: 1
-    // },
-    // {
-    //   content: null,
-    //   colspan: 1
-    // }
   ];
 };
 
@@ -167,7 +166,7 @@ const createHourRows = hours => {
 const Timetable = () => {
   const rows = createHourRows(schedule.workingHours);
   return (
-    <Table>
+    <Table style={{ tableLayout: "fixed", minWidth: "340px" }}>
       <TableHead></TableHead>
       <TableBody>
         {rows.map(row => (
@@ -179,7 +178,7 @@ const Timetable = () => {
                 style={index === 0 ? timeStyle : style}
                 colSpan={cell.colspan}
               >
-                {cell.content ? cell.content.toString() : "Hey"}
+                {cell.content ? cell.content : "Hey"}
               </TableCell>
             ))}
           </TableRow>
