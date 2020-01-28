@@ -6,10 +6,10 @@ import Timetable from "./components/timetable";
 
 function App() {
   return (
-    <React.Fragment>
+    <>
       <CssBaseline />
-      {<Timetable />}
-    </React.Fragment>
+      <Timetable />
+    </>
   );
 }
 

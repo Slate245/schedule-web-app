@@ -98,29 +98,32 @@ const getActivities = () => {
 
 const mapTimeslots = (currentHour, activities) => {
   const timeslotsInHour = 60 / minutesInTimeslot;
+  const mappedTimeslots = [];
 
-  let mappedTimeslots = [];
   for (let i = 0; i < timeslotsInHour; i++) {
     let currentTimeslotStart = new Date(currentHour.begining);
     currentTimeslotStart.setMinutes(
       currentTimeslotStart.getMinutes() + minutesInTimeslot * i
     );
+
     const currentTimeslot = new Timeslot(
       currentTimeslotStart,
       minutesInTimeslot
     );
 
     const activityInTimeslot = filterActivities(activities, currentTimeslot)[0];
-    if (!activityInTimeslot)
+
+    if (!activityInTimeslot) {
       mappedTimeslots.push({ content: null, colspan: 1 });
-    else {
+    } else {
       let numberOfSlots =
         (activityInTimeslot.allocatedTimeslot.end - currentTimeslot.begining) /
         1000 /
         60 /
         minutesInTimeslot;
-      if (numberOfSlots > timeslotsInHour - i)
+      if (numberOfSlots > timeslotsInHour - i) {
         numberOfSlots = timeslotsInHour - i;
+      }
 
       mappedTimeslots.push({
         content: (
@@ -131,6 +134,7 @@ const mapTimeslots = (currentHour, activities) => {
         ),
         colspan: numberOfSlots
       });
+
       i += numberOfSlots - 1;
     }
   }
@@ -151,15 +155,13 @@ const filterActivities = (activities, timeslot) => {
 };
 
 const createHourRows = hours => {
-  let hourRows = [];
-
-  for (let i = 0; i < hours.length; i++) {
-    const currentHour = new Timeslot(hours[i], 60);
+  const hourRows = hours.map(hour => {
+    const currentHour = new Timeslot(hour, 60);
     const activitiesThisHour = filterActivities(getActivities(), currentHour);
-    console.log("Activities this hour:", activitiesThisHour);
     const hourRow = mapTimeslots(currentHour, activitiesThisHour);
-    hourRows.push(hourRow);
-  }
+    return hourRow;
+  });
+
   return hourRows;
 };
 
@@ -167,18 +169,18 @@ const Timetable = () => {
   const rows = createHourRows(schedule.workingHours);
   return (
     <Table style={{ tableLayout: "fixed", minWidth: "340px" }}>
-      <TableHead></TableHead>
+      <TableHead />
       <TableBody>
         {rows.map(row => (
           <TableRow key={row[0].content}>
             {row.map((cell, index) => (
               <TableCell
                 key={index}
-                align={"center"}
+                align="center"
                 style={index === 0 ? timeStyle : style}
                 colSpan={cell.colspan}
               >
-                {cell.content ? cell.content : "Hey"}
+                {cell.content || "Hey"}
               </TableCell>
             ))}
           </TableRow>

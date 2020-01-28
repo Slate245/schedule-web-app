@@ -3,8 +3,7 @@ import { format } from "date-fns";
 
 import { Card, Typography } from "@material-ui/core";
 
-const Activity = ({ name, allocatedTimeslot }) => {
-  const { begining, end } = allocatedTimeslot;
+const Activity = ({ name, allocatedTimeslot: { begining, end } }) => {
   const duration = `${format(begining, "hh:mm")}>${format(end, "hh:mm")}`;
   return (
     <Card
@@ -18,7 +17,7 @@ const Activity = ({ name, allocatedTimeslot }) => {
       <Typography
         variant="caption"
         display="block"
-        noWrap="true"
+        noWrap
         align="left"
         style={{ color: "rgba(255,255,255, 0.6)" }}
       >
@@ -27,7 +26,7 @@ const Activity = ({ name, allocatedTimeslot }) => {
       <Typography
         variant="caption"
         display="block"
-        noWrap="true"
+        noWrap
         align="left"
         style={{ color: "rgba(255,255,255, 1)" }}
       >
