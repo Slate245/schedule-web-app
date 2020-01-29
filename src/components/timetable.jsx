@@ -6,6 +6,7 @@ import {
   TableRow,
   TableCell
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import Activity from "./activity";
 
@@ -66,14 +67,17 @@ const schedule = {
 
 const minutesInTimeslot = 15;
 
-const style = {
-  padding: "0",
-  borderRight: "1px solid rgba(224, 224, 224, 1)"
-};
-const timeStyle = {
-  width: "80px",
-  borderRight: "1px solid rgba(224, 224, 224, 1)"
-};
+const useStyles = makeStyles({
+  cell: {
+    padding: "0",
+    borderRight: "1px solid rgba(224, 224, 224, 1)"
+  },
+  time: {
+    width: "80px",
+    lineHeight: "1",
+    borderRight: "1px solid rgba(224, 224, 224, 1)"
+  }
+});
 
 class Timeslot {
   constructor(begining, lengthInMintues) {
@@ -166,6 +170,7 @@ const createHourRows = hours => {
 };
 
 const Timetable = () => {
+  const classes = useStyles();
   const rows = createHourRows(schedule.workingHours);
   return (
     <Table style={{ tableLayout: "fixed", minWidth: "340px" }}>
@@ -177,10 +182,10 @@ const Timetable = () => {
               <TableCell
                 key={index}
                 align="center"
-                style={index === 0 ? timeStyle : style}
+                className={index === 0 ? classes.time : classes.cell}
                 colSpan={cell.colspan}
               >
-                {cell.content || "Hey"}
+                {cell.content || ""}
               </TableCell>
             ))}
           </TableRow>
