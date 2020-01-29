@@ -73,7 +73,7 @@ const useStyles = makeStyles({
     borderRight: "1px solid rgba(224, 224, 224, 1)"
   },
   time: {
-    width: "80px",
+    width: "56px",
     lineHeight: "1",
     borderRight: "1px solid rgba(224, 224, 224, 1)"
   }

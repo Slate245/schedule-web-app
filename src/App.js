@@ -1,5 +1,5 @@
 import React from "react";
-import { CssBaseline } from "@material-ui/core";
+import { CssBaseline, Paper } from "@material-ui/core";
 import { Switch, Route, Redirect } from "react-router-dom";
 import "./App.css";
 
@@ -12,14 +12,14 @@ function App() {
   return (
     <>
       <CssBaseline />
-      <main>
+      <Paper square component="main" elevation={0}>
         <Switch>
           <Route path="/schedule" component={Schedule} />
           <Route path="/activities" component={Activities} />
           <Route path="/settings" component={Settings} />
           <Redirect from="/" exact to="/schedule" />
         </Switch>
-      </main>
+      </Paper>
       <NavBar />
     </>
   );
