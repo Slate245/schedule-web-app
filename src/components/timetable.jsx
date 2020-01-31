@@ -4,7 +4,9 @@ import {
   TableBody,
   TableHead,
   TableRow,
-  TableCell
+  TableCell,
+  Card,
+  CardActionArea
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -80,6 +82,14 @@ const useStyles = makeStyles({
   table: {
     tableLayout: "fixed",
     minWidth: "340px"
+  },
+  emptySlot: {
+    height: "2.5rem",
+    margin: "0 8px",
+    boxShadow: "none"
+  },
+  actionArea: {
+    height: "100%"
   }
 });
 
@@ -189,7 +199,11 @@ const Timetable = () => {
                 className={index === 0 ? classes.time : classes.cell}
                 colSpan={cell.colspan}
               >
-                {cell.content || ""}
+                {cell.content || (
+                  <Card className={classes.emptySlot}>
+                    <CardActionArea className={classes.actionArea} />
+                  </Card>
+                )}
               </TableCell>
             ))}
           </TableRow>
