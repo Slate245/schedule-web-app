@@ -1,6 +1,6 @@
 import { set } from "date-fns";
 
-export function getSchedule(date) {
+export function populateWorkingHours(date) {
   const from = 8;
   const to = 21;
   const workingHours = [];
@@ -9,6 +9,11 @@ export function getSchedule(date) {
       set(date, { hours: i, minutes: 0, seconds: 0, milliseconds: 0 })
     );
   }
+  return workingHours;
+}
+
+export function getSchedule(date) {
+  const workingHours = populateWorkingHours(date);
   return {
     date: new Date(date),
     workingHours,
