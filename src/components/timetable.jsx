@@ -12,61 +12,6 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import Activity from "./activity";
 
-const dateString = "January 6, 2020";
-const schedule = {
-  date: new Date(dateString),
-  workingHours: [
-    new Date(`${dateString} 8:00`),
-    new Date(`${dateString} 9:00`),
-    new Date(`${dateString} 10:00`),
-    new Date(`${dateString} 11:00`),
-    new Date(`${dateString} 12:00`),
-    new Date(`${dateString} 13:00`),
-    new Date(`${dateString} 14:00`),
-    new Date(`${dateString} 15:00`),
-    new Date(`${dateString} 16:00`),
-    new Date(`${dateString} 17:00`),
-    new Date(`${dateString} 18:00`),
-    new Date(`${dateString} 19:00`),
-    new Date(`${dateString} 20:00`),
-    new Date(`${dateString} 21:00`)
-  ],
-  plannedActivities: [
-    {
-      id: 1,
-      name: "Встреча",
-      allocatedTimeslot: {
-        begining: new Date(`${dateString} 08:00:00`),
-        end: new Date(`${dateString} 09:00:00`)
-      }
-    },
-    {
-      id: 2,
-      name: "Встреча",
-      allocatedTimeslot: {
-        begining: new Date(`${dateString} 09:00:00`),
-        end: new Date(`${dateString} 09:30:00`)
-      }
-    },
-    {
-      id: 3,
-      name: "Встреча",
-      allocatedTimeslot: {
-        begining: new Date(`${dateString} 09:30:00`),
-        end: new Date(`${dateString} 09:45:00`)
-      }
-    },
-    {
-      id: 4,
-      name: "Встреча с тестом",
-      allocatedTimeslot: {
-        begining: new Date(`${dateString} 10:45:00`),
-        end: new Date(`${dateString} 11:30:00`)
-      }
-    }
-  ]
-};
-
 const minutesInTimeslot = 15;
 
 const useStyles = makeStyles({
@@ -109,10 +54,6 @@ class Timeslot {
     );
   }
 }
-
-const getActivities = () => {
-  return [...schedule.plannedActivities];
-};
 
 const mapTimeslots = (currentHour, activities) => {
   const timeslotsInHour = 60 / minutesInTimeslot;
@@ -172,10 +113,10 @@ const filterActivities = (activities, timeslot) => {
   });
 };
 
-const createHourRows = hours => {
+const createHourRows = (hours, activities) => {
   const hourRows = hours.map(hour => {
     const currentHour = new Timeslot(hour, 60);
-    const activitiesThisHour = filterActivities(getActivities(), currentHour);
+    const activitiesThisHour = filterActivities(activities, currentHour);
     const hourRow = mapTimeslots(currentHour, activitiesThisHour);
     return hourRow;
   });
@@ -183,9 +124,12 @@ const createHourRows = hours => {
   return hourRows;
 };
 
-const Timetable = () => {
+const Timetable = ({ schedule }) => {
   const classes = useStyles();
-  const rows = createHourRows(schedule.workingHours);
+  const rows = createHourRows(
+    schedule.workingHours,
+    schedule.plannedActivities
+  );
   return (
     <Table className={classes.table}>
       <TableHead />

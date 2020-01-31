@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-
+import { getSchedule } from "../services/scheduleService";
 import { Fab } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import { DatePicker } from "@material-ui/pickers";
@@ -27,17 +27,22 @@ const useStyles = makeStyles({
 export default function Schedule() {
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [schedule, setSchedule] = useState(getSchedule(selectedDate));
+  const handleDateChange = date => {
+    setSelectedDate(date);
+    setSchedule(getSchedule(date));
+  };
 
   return (
     <section className={classes.root}>
       <DatePicker
         label="Сегодня"
         value={selectedDate}
-        onChange={setSelectedDate}
+        onChange={date => handleDateChange(date)}
         inputVariant="outlined"
         format="EEEEEE, d MMMM"
       />
-      <Timetable />
+      <Timetable schedule={schedule} />
       <Fab className={classes.fab}>
         <Add />
       </Fab>
