@@ -8,6 +8,7 @@ import {
   Card,
   CardActionArea
 } from "@material-ui/core";
+import { populateWorkingHours } from "../services/scheduleService";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Activity from "./activity";
@@ -127,8 +128,8 @@ const createHourRows = (hours, activities) => {
 const Timetable = ({ schedule }) => {
   const classes = useStyles();
   const rows = createHourRows(
-    schedule.workingHours,
-    schedule.plannedActivities
+    schedule.workingHours || populateWorkingHours(new Date()),
+    schedule.plannedActivities || []
   );
   return (
     <Table className={classes.table}>

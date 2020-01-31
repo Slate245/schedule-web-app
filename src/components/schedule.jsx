@@ -26,11 +26,17 @@ const useStyles = makeStyles({
 
 export default function Schedule() {
   const classes = useStyles();
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [schedule, setSchedule] = useState(getSchedule(selectedDate));
+  const [state, setState] = useState({
+    selectedDate: new Date(),
+    schedule: getSchedule(new Date())
+  });
+  const { selectedDate, schedule } = state;
+
   const handleDateChange = date => {
-    setSelectedDate(date);
-    setSchedule(getSchedule(date));
+    setState({
+      selectedDate: date,
+      schedule: getSchedule(date)
+    });
   };
 
   return (
@@ -38,7 +44,7 @@ export default function Schedule() {
       <DatePicker
         label="Сегодня"
         value={selectedDate}
-        onChange={date => handleDateChange(date)}
+        onChange={handleDateChange}
         inputVariant="outlined"
         format="EEEEEE, d MMMM"
       />
