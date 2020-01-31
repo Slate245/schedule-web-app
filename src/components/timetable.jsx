@@ -76,6 +76,10 @@ const useStyles = makeStyles({
     width: "56px",
     lineHeight: "1",
     borderRight: "1px solid rgba(224, 224, 224, 1)"
+  },
+  table: {
+    tableLayout: "fixed",
+    minWidth: "340px"
   }
 });
 
@@ -173,7 +177,7 @@ const Timetable = () => {
   const classes = useStyles();
   const rows = createHourRows(schedule.workingHours);
   return (
-    <Table style={{ tableLayout: "fixed", minWidth: "340px" }}>
+    <Table className={classes.table}>
       <TableHead />
       <TableBody>
         {rows.map(row => (
