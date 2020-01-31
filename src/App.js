@@ -1,6 +1,10 @@
 import React from "react";
 import { CssBaseline, Paper } from "@material-ui/core";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import {
+  createMuiTheme,
+  ThemeProvider,
+  makeStyles
+} from "@material-ui/core/styles";
 import green from "@material-ui/core/colors/green";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { Switch, Route, Redirect } from "react-router-dom";
@@ -12,7 +16,14 @@ import Activities from "./components/activities";
 import Settings from "./components/settings";
 import NavBar from "./components/navBar";
 
+const useStyles = makeStyles({
+  root: {
+    marginBottom: "56px"
+  }
+});
+
 function App() {
+  const classes = useStyles();
   const theme = createMuiTheme({
     palette: {
       primary: green
@@ -23,7 +34,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
         <CssBaseline />
-        <Paper square component="main" elevation={0}>
+        <Paper square component="main" elevation={0} className={classes.root}>
           <Switch>
             <Route path="/schedule" component={Schedule} />
             <Route path="/activities" component={Activities} />
