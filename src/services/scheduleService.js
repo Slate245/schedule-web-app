@@ -1,4 +1,7 @@
-import { set } from "date-fns";
+import { set, format } from "date-fns";
+import http from "./httpService";
+
+const apiEndpoint = "/schedules";
 
 export function populateWorkingHours(date) {
   const from = 8;
@@ -13,68 +16,6 @@ export function populateWorkingHours(date) {
 }
 
 export function getSchedule(date) {
-  const workingHours = populateWorkingHours(date);
-  return {
-    date: new Date(date),
-    workingHours,
-    plannedActivities: [
-      {
-        id: 1,
-        name: "Встреча",
-        allocatedTimeslot: {
-          begining: set(date, {
-            hours: 8,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0
-          }),
-          end: set(date, { hours: 9, minutes: 0, seconds: 0, milliseconds: 0 })
-        }
-      },
-      {
-        id: 2,
-        name: "Встреча",
-        allocatedTimeslot: {
-          begining: set(date, {
-            hours: 9,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0
-          }),
-          end: set(date, { hours: 9, minutes: 30, seconds: 0, milliseconds: 0 })
-        }
-      },
-      {
-        id: 3,
-        name: "Встреча",
-        allocatedTimeslot: {
-          begining: set(date, {
-            hours: 9,
-            minutes: 30,
-            seconds: 0,
-            milliseconds: 0
-          }),
-          end: set(date, { hours: 9, minutes: 45, seconds: 0, milliseconds: 0 })
-        }
-      },
-      {
-        id: 4,
-        name: "Встреча с тестом",
-        allocatedTimeslot: {
-          begining: set(date, {
-            hours: 10,
-            minutes: 45,
-            seconds: 0,
-            milliseconds: 0
-          }),
-          end: set(date, {
-            hours: 11,
-            minutes: 30,
-            seconds: 0,
-            milliseconds: 0
-          })
-        }
-      }
-    ]
-  };
+  const scheduleUrl = `${apiEndpoint}/${format(date, "yyyy-MM-dd")}`;
+  return http.get(scheduleUrl);
 }

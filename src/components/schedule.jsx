@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { getSchedule } from "../services/scheduleService";
 import { Fab } from "@material-ui/core";
@@ -26,17 +26,20 @@ const useStyles = makeStyles({
 
 export default function Schedule() {
   const classes = useStyles();
-  const [state, setState] = useState({
-    selectedDate: new Date(),
-    schedule: getSchedule(new Date())
-  });
-  const { selectedDate, schedule } = state;
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [schedule, setSchedule] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getSchedule(selectedDate);
+      setSchedule(result.data);
+    };
+
+    fetchData();
+  }, [selectedDate]);
 
   const handleDateChange = date => {
-    setState({
-      selectedDate: date,
-      schedule: getSchedule(date)
-    });
+    setSelectedDate(date);
   };
 
   return (

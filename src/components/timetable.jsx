@@ -1,4 +1,6 @@
 import React from "react";
+import { populateWorkingHours } from "../services/scheduleService";
+import { parseISO } from "date-fns";
 import {
   Table,
   TableBody,
@@ -8,7 +10,6 @@ import {
   Card,
   CardActionArea
 } from "@material-ui/core";
-import { populateWorkingHours } from "../services/scheduleService";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Activity from "./activity";
@@ -77,7 +78,8 @@ const mapTimeslots = (currentHour, activities) => {
       mappedTimeslots.push({ content: null, colspan: 1 });
     } else {
       let numberOfSlots =
-        (activityInTimeslot.allocatedTimeslot.end - currentTimeslot.begining) /
+        (new Date(activityInTimeslot.allocatedTimeslot.end) -
+          new Date(currentTimeslot.begining)) /
         1000 /
         60 /
         minutesInTimeslot;
@@ -110,7 +112,12 @@ const mapTimeslots = (currentHour, activities) => {
 
 const filterActivities = (activities, timeslot) => {
   return activities.filter(a => {
-    return Timeslot.checkIntersection(a.allocatedTimeslot, timeslot);
+    const { begining, end } = a.allocatedTimeslot;
+    const allocatedTimeslot = {
+      begining: parseISO(begining),
+      end: parseISO(end)
+    };
+    return Timeslot.checkIntersection(allocatedTimeslot, timeslot);
   });
 };
 

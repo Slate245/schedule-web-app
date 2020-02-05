@@ -25,7 +25,9 @@ const useStyles = makeStyles({
 
 const Activity = ({ name, allocatedTimeslot: { begining, end } }) => {
   const classes = useStyles();
-  const duration = `${format(begining, "hh:mm")}>${format(end, "hh:mm")}`;
+  const startTime = new Date(begining);
+  const endTime = new Date(end);
+  const duration = `${format(startTime, "HH:mm")}>${format(endTime, "HH:mm")}`;
   return (
     <Card className={classes.root}>
       <CardActionArea className={classes.actionArea}>
