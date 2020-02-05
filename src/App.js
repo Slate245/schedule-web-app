@@ -1,4 +1,6 @@
 import React from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import { CssBaseline, Paper } from "@material-ui/core";
 import {
   createMuiTheme,
@@ -7,7 +9,6 @@ import {
 } from "@material-ui/core/styles";
 import green from "@material-ui/core/colors/green";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { Switch, Route, Redirect } from "react-router-dom";
 import DateFnsUtils from "@date-io/date-fns";
 import ruLocale from "date-fns/locale/ru";
 
@@ -44,6 +45,7 @@ function App() {
         </Paper>
         <NavBar />
       </MuiPickersUtilsProvider>
+      <ToastContainer />
     </ThemeProvider>
   );
 }
