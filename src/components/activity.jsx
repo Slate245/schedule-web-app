@@ -1,5 +1,5 @@
 import React from "react";
-import { format } from "date-fns";
+import { DateTime } from "luxon";
 
 import { Card, CardActionArea, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,11 +23,13 @@ const useStyles = makeStyles({
   }
 });
 
-const Activity = ({ name, allocatedTimeslot: { begining, end }, onClick }) => {
+const Activity = ({ name, allocatedInterval: { start, end }, onClick }) => {
   const classes = useStyles();
-  const startTime = new Date(begining);
-  const endTime = new Date(end);
-  const duration = `${format(startTime, "HH:mm")}>${format(endTime, "HH:mm")}`;
+  const startTime = DateTime.fromISO(start, { setZone: true });
+  const endTime = DateTime.fromISO(end, { setZone: true });
+  const duration = `${startTime.toFormat("HH:mm")}>${endTime.toFormat(
+    "HH:mm"
+  )}`;
   return (
     <Card className={classes.root}>
       <CardActionArea className={classes.actionArea} onClick={onClick}>

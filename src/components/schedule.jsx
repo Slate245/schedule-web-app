@@ -30,7 +30,7 @@ export default function Schedule() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [schedule, setSchedule] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedTimeslot, setSelectedTimeslot] = useState({});
+  const [selectedInterval, setSelectedInterval] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,14 +51,14 @@ export default function Schedule() {
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    setSelectedTimeslot({});
+    setSelectedInterval({});
   };
 
-  const handleTimeslotSelect = selectedTimeslot => {
-    const begining = new Date(selectedTimeslot.begining);
-    const end = new Date(selectedTimeslot.end);
+  const handleIntervalSelect = selectedInterval => {
+    const start = new Date(selectedInterval.start);
+    const end = new Date(selectedInterval.end);
 
-    setSelectedTimeslot({ begining, end });
+    setSelectedInterval({ start, end });
     setIsDialogOpen(true);
   };
 
@@ -71,15 +71,15 @@ export default function Schedule() {
         inputVariant="outlined"
         format="EEEEEE, d MMMM"
       />
-      <Timetable schedule={schedule} onTimeslotSelect={handleTimeslotSelect} />
+      <Timetable schedule={schedule} onIntervalSelect={handleIntervalSelect} />
       <Fab className={classes.fab} onClick={handleDialogOpen}>
         <Add />
       </Fab>
       <PlanActivityDialog
         open={isDialogOpen}
         onClose={handleDialogClose}
-        selectedTimeslot={selectedTimeslot}
-        setSelectedTimeslot={setSelectedTimeslot}
+        selectedInterval={selectedInterval}
+        setSelectedInterval={setSelectedInterval}
       />
     </section>
   );

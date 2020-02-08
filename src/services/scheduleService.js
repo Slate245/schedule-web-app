@@ -1,21 +1,24 @@
-import { set, format } from "date-fns";
+import { DateTime } from "luxon";
 import http from "./httpService";
 
 const apiEndpoint = "/schedules";
 
-export function populateWorkingHours(date) {
+export function populateWorkingHours() {
   const from = 8;
   const to = 21;
   const workingHours = [];
   for (let i = from; i <= to; i++) {
     workingHours.push(
-      set(date, { hours: i, minutes: 0, seconds: 0, milliseconds: 0 })
+      DateTime.utc()
+        .set({ hour: i, minute: 0, second: 0, millisecond: 0 })
+        .toISO()
     );
   }
   return workingHours;
 }
 
 export function getSchedule(date) {
-  const scheduleUrl = `${apiEndpoint}/${format(date, "yyyy-MM-dd")}`;
+  const scheduleDate = DateTime.fromJSDate(date);
+  const scheduleUrl = `${apiEndpoint}/${scheduleDate.toISODate()}`;
   return http.get(scheduleUrl);
 }

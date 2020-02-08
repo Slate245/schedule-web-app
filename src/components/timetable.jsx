@@ -1,6 +1,6 @@
 import React from "react";
 import { populateWorkingHours } from "../services/scheduleService";
-import { parseISO } from "date-fns";
+import { DateTime, Interval } from "luxon";
 import {
   Table,
   TableBody,
@@ -14,7 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import Activity from "./activity";
 
-const minutesInTimeslot = 15;
+const minutesInInterval = 15;
 
 const useStyles = makeStyles({
   cell: {
@@ -40,81 +40,63 @@ const useStyles = makeStyles({
   }
 });
 
-class Timeslot {
-  constructor(begining, lengthInMintues) {
-    this.begining = new Date(begining);
-    this.end = new Date(begining);
-    this.end.setMinutes(this.end.getMinutes() + lengthInMintues);
-  }
-
-  static checkIntersection(first, second) {
-    return (
-      (first.begining <= second.begining && second.begining < first.end) ||
-      (first.begining < second.end && second.end <= first.end) ||
-      (second.begining <= first.begining && first.begining < second.end) ||
-      (second.begining < first.end && first.end <= second.end)
-    );
-  }
-}
-
-const filterActivities = (activities, timeslot) => {
+const filterActivities = (activities, intervalToCheck) => {
   return activities.filter(a => {
-    const { begining, end } = a.allocatedTimeslot;
-    const allocatedTimeslot = {
-      begining: parseISO(begining),
-      end: parseISO(end)
-    };
-    return Timeslot.checkIntersection(allocatedTimeslot, timeslot);
+    const startLocal = DateTime.fromISO(a.allocatedInterval.start);
+    const endLocal = DateTime.fromISO(a.allocatedInterval.end);
+    const activityIntervalLocal = Interval.fromDateTimes(startLocal, endLocal);
+    return activityIntervalLocal.overlaps(intervalToCheck);
   });
 };
 
-const Timetable = ({ schedule, onTimeslotSelect }) => {
+const Timetable = ({ schedule, onIntervalSelect }) => {
   const classes = useStyles();
 
   const rows = createHourRows(
-    schedule.workingHours || populateWorkingHours(new Date()),
+    schedule.workingHours || populateWorkingHours(),
     schedule.plannedActivities || []
   );
 
   function createHourRows(hours, activities) {
     const hourRows = hours.map(hour => {
-      const currentHour = new Timeslot(hour, 60);
-      const activitiesThisHour = filterActivities(activities, currentHour);
-      const hourRow = mapTimeslots(currentHour, activitiesThisHour);
+      const hourStart = DateTime.fromISO(hour, { setZone: true });
+      const currentHourInterval = Interval.after(hourStart, { hours: 1 });
+      const activitiesThisHour = filterActivities(
+        activities,
+        currentHourInterval
+      );
+      const hourRow = mapIntervals(currentHourInterval, activitiesThisHour);
       return hourRow;
     });
 
     return hourRows;
   }
 
-  function mapTimeslots(currentHour, activities) {
-    const timeslotsInHour = 60 / minutesInTimeslot;
-    const mappedTimeslots = [];
+  function mapIntervals(hourInterval, activities) {
+    const intervalsInHour = 60 / minutesInInterval;
+    const mappedIntervals = [];
 
-    for (let i = 0; i < timeslotsInHour; i++) {
-      let currentTimeslotStart = new Date(currentHour.begining);
-      currentTimeslotStart.setMinutes(
-        currentTimeslotStart.getMinutes() + minutesInTimeslot * i
-      );
+    for (let i = 0; i < intervalsInHour; i++) {
+      const currentIntervalStart = hourInterval.start.plus({
+        minutes: minutesInInterval * i
+      });
+      const currentInterval = Interval.after(currentIntervalStart, {
+        minutes: minutesInInterval
+      });
 
-      const currentTimeslot = new Timeslot(
-        currentTimeslotStart,
-        minutesInTimeslot
-      );
-
-      const activityInTimeslot = filterActivities(
+      const activityInInterval = filterActivities(
         activities,
-        currentTimeslot
+        currentInterval
       )[0];
 
-      if (!activityInTimeslot) {
-        mappedTimeslots.push({
+      if (!activityInInterval) {
+        mappedIntervals.push({
           content: (
             <Card className={classes.emptySlot}>
               <CardActionArea
                 className={classes.actionArea}
                 onClick={() => {
-                  onTimeslotSelect(currentTimeslot);
+                  onIntervalSelect(currentInterval);
                 }}
               />
             </Card>
@@ -123,22 +105,22 @@ const Timetable = ({ schedule, onTimeslotSelect }) => {
         });
       } else {
         let numberOfSlots =
-          (new Date(activityInTimeslot.allocatedTimeslot.end) -
-            new Date(currentTimeslot.begining)) /
+          (new Date(activityInInterval.allocatedInterval.end) -
+            new Date(currentInterval.start)) /
           1000 /
           60 /
-          minutesInTimeslot;
-        if (numberOfSlots > timeslotsInHour - i) {
-          numberOfSlots = timeslotsInHour - i;
+          minutesInInterval;
+        if (numberOfSlots > intervalsInHour - i) {
+          numberOfSlots = intervalsInHour - i;
         }
 
-        mappedTimeslots.push({
+        mappedIntervals.push({
           content: (
             <Activity
-              name={activityInTimeslot.name}
-              allocatedTimeslot={activityInTimeslot.allocatedTimeslot}
+              name={activityInInterval.name}
+              allocatedInterval={activityInInterval.allocatedInterval}
               onClick={() => {
-                onTimeslotSelect(activityInTimeslot.allocatedTimeslot);
+                onIntervalSelect(activityInInterval.allocatedInterval);
               }}
             />
           ),
@@ -151,12 +133,13 @@ const Timetable = ({ schedule, onTimeslotSelect }) => {
 
     return [
       {
-        content: `${currentHour.begining.getHours()}:00`,
+        content: hourInterval.start.toFormat("H:mm"),
         colspan: 1
       },
-      ...mappedTimeslots
+      ...mappedIntervals
     ];
   }
+
   return (
     <Table className={classes.table}>
       <TableHead />
@@ -174,7 +157,7 @@ const Timetable = ({ schedule, onTimeslotSelect }) => {
                   <Card className={classes.emptySlot}>
                     <CardActionArea
                       className={classes.actionArea}
-                      onClick={onTimeslotSelect}
+                      onClick={onIntervalSelect}
                     />
                   </Card>
                 )}
