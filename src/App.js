@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { CssBaseline, Paper } from "@material-ui/core";
 import {
   createMuiTheme,
@@ -24,6 +24,7 @@ const useStyles = makeStyles({
 });
 
 function App() {
+  toast.configure();
   const classes = useStyles();
   const theme = createMuiTheme({
     palette: {
@@ -45,7 +46,6 @@ function App() {
         </Paper>
         <NavBar />
       </MuiPickersUtilsProvider>
-      <ToastContainer />
     </ThemeProvider>
   );
 }
