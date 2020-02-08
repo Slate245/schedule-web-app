@@ -5,6 +5,7 @@ import { Fab } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import { DatePicker } from "@material-ui/pickers";
 import Timetable from "./timetable";
+import { PlanActivityDialog } from "./planActivityDialog";
 
 const useStyles = makeStyles({
   root: {
@@ -28,6 +29,8 @@ export default function Schedule() {
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [schedule, setSchedule] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedTimeslot, setSelectedTimeslot] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +45,23 @@ export default function Schedule() {
     setSelectedDate(date);
   };
 
+  const handleDialogOpen = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    setSelectedTimeslot({});
+  };
+
+  const handleTimeslotSelect = selectedTimeslot => {
+    const begining = new Date(selectedTimeslot.begining);
+    const end = new Date(selectedTimeslot.end);
+
+    setSelectedTimeslot({ begining, end });
+    setIsDialogOpen(true);
+  };
+
   return (
     <section className={classes.root}>
       <DatePicker
@@ -51,10 +71,16 @@ export default function Schedule() {
         inputVariant="outlined"
         format="EEEEEE, d MMMM"
       />
-      <Timetable schedule={schedule} />
-      <Fab className={classes.fab}>
+      <Timetable schedule={schedule} onTimeslotSelect={handleTimeslotSelect} />
+      <Fab className={classes.fab} onClick={handleDialogOpen}>
         <Add />
       </Fab>
+      <PlanActivityDialog
+        open={isDialogOpen}
+        onClose={handleDialogClose}
+        selectedTimeslot={selectedTimeslot}
+        setSelectedTimeslot={setSelectedTimeslot}
+      />
     </section>
   );
 }

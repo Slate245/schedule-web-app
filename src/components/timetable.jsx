@@ -57,59 +57,6 @@ class Timeslot {
   }
 }
 
-const mapTimeslots = (currentHour, activities) => {
-  const timeslotsInHour = 60 / minutesInTimeslot;
-  const mappedTimeslots = [];
-
-  for (let i = 0; i < timeslotsInHour; i++) {
-    let currentTimeslotStart = new Date(currentHour.begining);
-    currentTimeslotStart.setMinutes(
-      currentTimeslotStart.getMinutes() + minutesInTimeslot * i
-    );
-
-    const currentTimeslot = new Timeslot(
-      currentTimeslotStart,
-      minutesInTimeslot
-    );
-
-    const activityInTimeslot = filterActivities(activities, currentTimeslot)[0];
-
-    if (!activityInTimeslot) {
-      mappedTimeslots.push({ content: null, colspan: 1 });
-    } else {
-      let numberOfSlots =
-        (new Date(activityInTimeslot.allocatedTimeslot.end) -
-          new Date(currentTimeslot.begining)) /
-        1000 /
-        60 /
-        minutesInTimeslot;
-      if (numberOfSlots > timeslotsInHour - i) {
-        numberOfSlots = timeslotsInHour - i;
-      }
-
-      mappedTimeslots.push({
-        content: (
-          <Activity
-            name={activityInTimeslot.name}
-            allocatedTimeslot={activityInTimeslot.allocatedTimeslot}
-          />
-        ),
-        colspan: numberOfSlots
-      });
-
-      i += numberOfSlots - 1;
-    }
-  }
-
-  return [
-    {
-      content: `${currentHour.begining.getHours()}:00`,
-      colspan: 1
-    },
-    ...mappedTimeslots
-  ];
-};
-
 const filterActivities = (activities, timeslot) => {
   return activities.filter(a => {
     const { begining, end } = a.allocatedTimeslot;
@@ -121,23 +68,95 @@ const filterActivities = (activities, timeslot) => {
   });
 };
 
-const createHourRows = (hours, activities) => {
-  const hourRows = hours.map(hour => {
-    const currentHour = new Timeslot(hour, 60);
-    const activitiesThisHour = filterActivities(activities, currentHour);
-    const hourRow = mapTimeslots(currentHour, activitiesThisHour);
-    return hourRow;
-  });
-
-  return hourRows;
-};
-
-const Timetable = ({ schedule }) => {
+const Timetable = ({ schedule, onTimeslotSelect }) => {
   const classes = useStyles();
+
   const rows = createHourRows(
     schedule.workingHours || populateWorkingHours(new Date()),
     schedule.plannedActivities || []
   );
+
+  function createHourRows(hours, activities) {
+    const hourRows = hours.map(hour => {
+      const currentHour = new Timeslot(hour, 60);
+      const activitiesThisHour = filterActivities(activities, currentHour);
+      const hourRow = mapTimeslots(currentHour, activitiesThisHour);
+      return hourRow;
+    });
+
+    return hourRows;
+  }
+
+  function mapTimeslots(currentHour, activities) {
+    const timeslotsInHour = 60 / minutesInTimeslot;
+    const mappedTimeslots = [];
+
+    for (let i = 0; i < timeslotsInHour; i++) {
+      let currentTimeslotStart = new Date(currentHour.begining);
+      currentTimeslotStart.setMinutes(
+        currentTimeslotStart.getMinutes() + minutesInTimeslot * i
+      );
+
+      const currentTimeslot = new Timeslot(
+        currentTimeslotStart,
+        minutesInTimeslot
+      );
+
+      const activityInTimeslot = filterActivities(
+        activities,
+        currentTimeslot
+      )[0];
+
+      if (!activityInTimeslot) {
+        mappedTimeslots.push({
+          content: (
+            <Card className={classes.emptySlot}>
+              <CardActionArea
+                className={classes.actionArea}
+                onClick={() => {
+                  onTimeslotSelect(currentTimeslot);
+                }}
+              />
+            </Card>
+          ),
+          colspan: 1
+        });
+      } else {
+        let numberOfSlots =
+          (new Date(activityInTimeslot.allocatedTimeslot.end) -
+            new Date(currentTimeslot.begining)) /
+          1000 /
+          60 /
+          minutesInTimeslot;
+        if (numberOfSlots > timeslotsInHour - i) {
+          numberOfSlots = timeslotsInHour - i;
+        }
+
+        mappedTimeslots.push({
+          content: (
+            <Activity
+              name={activityInTimeslot.name}
+              allocatedTimeslot={activityInTimeslot.allocatedTimeslot}
+              onClick={() => {
+                onTimeslotSelect(activityInTimeslot.allocatedTimeslot);
+              }}
+            />
+          ),
+          colspan: numberOfSlots
+        });
+
+        i += numberOfSlots - 1;
+      }
+    }
+
+    return [
+      {
+        content: `${currentHour.begining.getHours()}:00`,
+        colspan: 1
+      },
+      ...mappedTimeslots
+    ];
+  }
   return (
     <Table className={classes.table}>
       <TableHead />
@@ -153,7 +172,10 @@ const Timetable = ({ schedule }) => {
               >
                 {cell.content || (
                   <Card className={classes.emptySlot}>
-                    <CardActionArea className={classes.actionArea} />
+                    <CardActionArea
+                      className={classes.actionArea}
+                      onClick={onTimeslotSelect}
+                    />
                   </Card>
                 )}
               </TableCell>

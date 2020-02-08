@@ -23,14 +23,14 @@ const useStyles = makeStyles({
   }
 });
 
-const Activity = ({ name, allocatedTimeslot: { begining, end } }) => {
+const Activity = ({ name, allocatedTimeslot: { begining, end }, onClick }) => {
   const classes = useStyles();
   const startTime = new Date(begining);
   const endTime = new Date(end);
   const duration = `${format(startTime, "HH:mm")}>${format(endTime, "HH:mm")}`;
   return (
     <Card className={classes.root}>
-      <CardActionArea className={classes.actionArea}>
+      <CardActionArea className={classes.actionArea} onClick={onClick}>
         <Typography
           variant="caption"
           display="block"
