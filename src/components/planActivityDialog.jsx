@@ -3,10 +3,12 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
   List,
+  Button,
   makeStyles,
   useMediaQuery,
   useTheme
@@ -44,6 +46,12 @@ const useStyles = makeStyles({
   duration: {
     whiteSpace: "nowrap",
     marginLeft: "0.5rem"
+  },
+  expansion: {
+    marginBottom: "1rem"
+  },
+  summary: {
+    padding: "0 1rem"
   }
 });
 
@@ -91,8 +99,11 @@ export const PlanActivityDialog = ({ open, onClose }) => {
             onChange={handleTimeslotChange}
           />
         </div>
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+        <ExpansionPanel className={classes.expansion}>
+          <ExpansionPanelSummary
+            className={classes.summary}
+            expandIcon={<ExpandMore />}
+          >
             Подходящие дела
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
@@ -103,15 +114,12 @@ export const PlanActivityDialog = ({ open, onClose }) => {
             </List>
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-            Новое дело
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <PlanNewActivityForm />
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+        <PlanNewActivityForm />
       </DialogContent>
+      <DialogActions>
+        <Button color="primary">Отмена</Button>
+        <Button color="primary">ОК</Button>
+      </DialogActions>
     </Dialog>
   );
 };
