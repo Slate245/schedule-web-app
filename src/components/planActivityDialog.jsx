@@ -61,6 +61,7 @@ export const PlanActivityDialog = ({ open, onClose }) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down(400));
 
   const [activities, setActivities] = useState([]);
+  const [chosenActivity, setChosenActivity] = useState({});
   useEffect(() => {
     const fetchData = async () => {
       const result = await getActivities();
@@ -72,6 +73,10 @@ export const PlanActivityDialog = ({ open, onClose }) => {
 
   function handleTimeslotChange(selectedTime) {
     //Нужно взять часы и минуты из selectedTime и записать их через setSelectedTimeslot
+  }
+
+  function handleActivityChoice(activity) {
+    setChosenActivity(activity);
   }
 
   return (
@@ -109,7 +114,12 @@ export const PlanActivityDialog = ({ open, onClose }) => {
           <ExpansionPanelDetails>
             <List dense className={classes.list}>
               {activities.map(a => (
-                <ActivitiesListItem key={a._id} activity={a} />
+                <ActivitiesListItem
+                  key={a._id}
+                  activity={a}
+                  selected={chosenActivity._id === a._id}
+                  onClick={handleActivityChoice}
+                />
               ))}
             </List>
           </ExpansionPanelDetails>

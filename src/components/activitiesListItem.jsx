@@ -5,6 +5,15 @@ const useStyles = makeStyles({
   list: {
     width: "100%"
   },
+  listItem: {
+    "&$selected": {
+      backgroundColor: "rgba(76, 175, 80, 0.38)"
+    },
+    "&$selected:hover": {
+      backgroundColor: "rgba(76, 175, 80, 0.38)"
+    }
+  },
+  selected: {},
   listItemText: {
     display: "flex",
     justifyContent: "space-between"
@@ -15,20 +24,25 @@ const useStyles = makeStyles({
   }
 });
 
-export const ActivitiesListItem = ({
-  activity: { name, preferredInterval, expectedDuration }
-}) => {
-  const { listItemText, duration } = useStyles();
+export const ActivitiesListItem = ({ activity, onClick, selected }) => {
+  const { name, expectedDuration } = activity;
+  const classes = useStyles();
   return (
-    <ListItem button divider>
+    <ListItem
+      button
+      divider
+      classes={{ root: classes.listItem, selected: classes.selected }}
+      selected={selected}
+      onClick={() => onClick(activity)}
+    >
       <ListItemText
-        className={listItemText}
+        className={classes.listItemText}
         primaryTypographyProps={{ variant: "subtitle2", component: "span" }}
         primary={name}
         secondaryTypographyProps={{
           variant: "caption",
           component: "span",
-          className: duration
+          className: classes.duration
         }}
         secondary={`~ ${expectedDuration} мин.`}
       />
