@@ -21,3 +21,18 @@ export function getSchedule(date) {
   const scheduleUrl = `${apiEndpoint}/${date.toISODate()}`;
   return http.get(scheduleUrl);
 }
+
+export function createEmptySchedule(date) {
+  const emptySchedule = {
+    date: DateTime.fromObject({
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+      zone: "utc"
+    }).toISO(),
+    workingHours: populateWorkingHours(),
+    plannedActivities: []
+  };
+  return emptySchedule;
+}

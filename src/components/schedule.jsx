@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DateTime } from "luxon";
 import { makeStyles } from "@material-ui/core/styles";
-import { getSchedule } from "../services/scheduleService";
+import { getSchedule, createEmptySchedule } from "../services/scheduleService";
 import { Fab } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import { DatePicker } from "@material-ui/pickers";
@@ -29,14 +29,20 @@ const useStyles = makeStyles({
 export default function Schedule() {
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = useState(DateTime.local());
-  const [schedule, setSchedule] = useState("");
+  const [schedule, setSchedule] = useState(
+    createEmptySchedule(DateTime.local())
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedInterval, setSelectedInterval] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await getSchedule(selectedDate);
-      setSchedule(result.data);
+      if (!result.data) {
+        setSchedule(createEmptySchedule(selectedDate));
+      } else {
+        setSchedule(result.data);
+      }
     };
 
     fetchData();
