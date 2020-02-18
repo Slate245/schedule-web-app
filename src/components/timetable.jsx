@@ -153,14 +153,7 @@ const Timetable = ({ schedule, onIntervalSelect }) => {
                 className={index === 0 ? classes.time : classes.cell}
                 colSpan={cell.colspan}
               >
-                {cell.content || (
-                  <Card className={classes.emptySlot}>
-                    <CardActionArea
-                      className={classes.actionArea}
-                      onClick={onIntervalSelect}
-                    />
-                  </Card>
-                )}
+                {cell.content}
               </TableCell>
             ))}
           </TableRow>
