@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { DateTime } from "luxon";
 import { makeStyles } from "@material-ui/core/styles";
 import { getSchedule } from "../services/scheduleService";
 import { Fab } from "@material-ui/core";
@@ -27,7 +28,7 @@ const useStyles = makeStyles({
 
 export default function Schedule() {
   const classes = useStyles();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(DateTime.local());
   const [schedule, setSchedule] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedInterval, setSelectedInterval] = useState({});
@@ -55,8 +56,7 @@ export default function Schedule() {
   };
 
   const handleIntervalSelect = selectedInterval => {
-    const start = new Date(selectedInterval.start);
-    const end = new Date(selectedInterval.end);
+    const { start, end } = selectedInterval;
 
     setSelectedInterval({ start, end });
     setIsDialogOpen(true);
@@ -69,7 +69,7 @@ export default function Schedule() {
         value={selectedDate}
         onChange={handleDateChange}
         inputVariant="outlined"
-        format="EEEEEE, d MMMM"
+        format="EEE, d MMMM"
       />
       <Timetable schedule={schedule} onIntervalSelect={handleIntervalSelect} />
       <Fab className={classes.fab} onClick={handleDialogOpen}>

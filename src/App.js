@@ -9,8 +9,7 @@ import {
 } from "@material-ui/core/styles";
 import green from "@material-ui/core/colors/green";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import ruLocale from "date-fns/locale/ru";
+import LuxonUtils from "@date-io/luxon";
 
 import Schedule from "./components/schedule";
 import Activities from "./components/activities";
@@ -34,7 +33,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+      <MuiPickersUtilsProvider utils={LuxonUtils} locale="ru">
         <CssBaseline />
         <Paper square component="main" elevation={0} className={classes.root}>
           <Switch>

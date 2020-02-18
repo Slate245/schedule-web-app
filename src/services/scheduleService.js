@@ -18,7 +18,6 @@ export function populateWorkingHours() {
 }
 
 export function getSchedule(date) {
-  const scheduleDate = DateTime.fromJSDate(date);
-  const scheduleUrl = `${apiEndpoint}/${scheduleDate.toISODate()}`;
+  const scheduleUrl = `${apiEndpoint}/${date.toISODate()}`;
   return http.get(scheduleUrl);
 }
