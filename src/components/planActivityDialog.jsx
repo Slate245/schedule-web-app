@@ -55,7 +55,7 @@ const useStyles = makeStyles({
   }
 });
 
-export const PlanActivityDialog = ({ open, onClose }) => {
+export const PlanActivityDialog = ({ open, onClose, selectedInterval }) => {
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down(400));
@@ -92,6 +92,7 @@ export const PlanActivityDialog = ({ open, onClose }) => {
             inputVariant="outlined"
             size="small"
             onChange={handleTimeslotChange}
+            value={selectedInterval.start}
           />
           <ArrowRight className={classes.arrow} />
           <TimePicker
@@ -102,6 +103,7 @@ export const PlanActivityDialog = ({ open, onClose }) => {
             inputVariant="outlined"
             size="small"
             onChange={handleTimeslotChange}
+            value={selectedInterval.end}
           />
         </div>
         <ExpansionPanel className={classes.expansion}>

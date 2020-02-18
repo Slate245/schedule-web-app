@@ -56,7 +56,11 @@ export default function Schedule() {
   };
 
   const handleIntervalSelect = selectedInterval => {
-    const { start, end } = selectedInterval;
+    let { start, end } = selectedInterval;
+    if (typeof start === "string") {
+      start = DateTime.fromISO(selectedInterval.start, { setZone: true });
+      end = DateTime.fromISO(selectedInterval.end, { setZone: true });
+    }
 
     setSelectedInterval({ start, end });
     setIsDialogOpen(true);
