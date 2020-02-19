@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { DateTime } from "luxon";
 import {
   Dialog,
   DialogTitle,
@@ -62,12 +63,12 @@ export const PlanActivityDialog = ({ open, onClose, selectedInterval }) => {
 
   const [activities, setActivities] = useState([]);
   const [chosenActivity, setChosenActivity] = useState({});
+
   useEffect(() => {
     const fetchData = async () => {
       const result = await getActivities();
       setActivities(result.data);
     };
-
     fetchData();
   }, [activities]);
 
@@ -78,6 +79,17 @@ export const PlanActivityDialog = ({ open, onClose, selectedInterval }) => {
   function handleActivityChoice(activity) {
     setChosenActivity(activity);
   }
+
+  function getCurrentIntervalStart() {
+    const currentTime = DateTime.local();
+    const difference = currentTime.minute % 15;
+    if (difference !== 0) {
+      return currentTime.minus({ minutes: difference });
+    }
+    return currentTime;
+  }
+
+  function handleActivityPlanning() {}
 
   return (
     <Dialog open={open} onClose={onClose} fullScreen={fullScreen}>
@@ -92,7 +104,7 @@ export const PlanActivityDialog = ({ open, onClose, selectedInterval }) => {
             inputVariant="outlined"
             size="small"
             onChange={handleTimeslotChange}
-            value={selectedInterval.start}
+            value={selectedInterval.start || getCurrentIntervalStart()}
           />
           <ArrowRight className={classes.arrow} />
           <TimePicker
@@ -103,7 +115,7 @@ export const PlanActivityDialog = ({ open, onClose, selectedInterval }) => {
             inputVariant="outlined"
             size="small"
             onChange={handleTimeslotChange}
-            value={selectedInterval.end}
+            value={selectedInterval.end || getCurrentIntervalStart()}
           />
         </div>
         <ExpansionPanel className={classes.expansion}>
@@ -129,8 +141,12 @@ export const PlanActivityDialog = ({ open, onClose, selectedInterval }) => {
         <PlanNewActivityForm />
       </DialogContent>
       <DialogActions>
-        <Button color="primary">Отмена</Button>
-        <Button color="primary">ОК</Button>
+        <Button color="primary" onClick={onClose}>
+          Отмена
+        </Button>
+        <Button color="primary" onClick={handleActivityPlanning}>
+          ОК
+        </Button>
       </DialogActions>
     </Dialog>
   );
