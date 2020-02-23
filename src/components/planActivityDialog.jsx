@@ -226,12 +226,16 @@ export const PlanActivityDialog = ({
       return [];
     }
     const { start, end } = selectedInterval;
+    const ISODate = start.toISO().split("T")[0];
     const currentInterval = Interval.fromDateTimes(start, end);
     return activities.filter(a => {
       const { start, end } = a.preferredInterval;
-      const preferredInterval = Interval.fromISO(`${start}/${end}`, {
-        setZone: true
-      });
+      const preferredInterval = Interval.fromISO(
+        `${ISODate}T${start}/${ISODate}T${end}`,
+        {
+          setZone: true
+        }
+      );
       return preferredInterval.engulfs(currentInterval);
     });
   }
