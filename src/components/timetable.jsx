@@ -120,7 +120,10 @@ const Timetable = ({ schedule, onIntervalSelect }) => {
               name={activityInInterval.name}
               allocatedInterval={activityInInterval.allocatedInterval}
               onClick={() => {
-                onIntervalSelect(activityInInterval.allocatedInterval);
+                onIntervalSelect(
+                  activityInInterval.allocatedInterval,
+                  activityInInterval
+                );
               }}
             />
           ),

@@ -34,6 +34,7 @@ export default function Schedule() {
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedInterval, setSelectedInterval] = useState({});
+  const [selectedActivity, setSelectedActivity] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,16 +60,20 @@ export default function Schedule() {
   const handleDialogClose = () => {
     setIsDialogOpen(false);
     setSelectedInterval({});
+    setSelectedActivity({});
   };
 
-  const handleIntervalSelect = selectedInterval => {
+  const handleIntervalSelect = (selectedInterval, selectedActivity) => {
     let { start, end } = selectedInterval;
     if (typeof start === "string") {
-      start = DateTime.fromISO(selectedInterval.start, { setZone: true });
-      end = DateTime.fromISO(selectedInterval.end, { setZone: true });
+      start = DateTime.fromISO(start, { setZone: true });
+      end = DateTime.fromISO(end, { setZone: true });
     }
 
     setSelectedInterval({ start, end });
+    if (selectedActivity) {
+      setSelectedActivity(selectedActivity);
+    }
     setIsDialogOpen(true);
   };
 
@@ -89,7 +94,10 @@ export default function Schedule() {
         open={isDialogOpen}
         onClose={handleDialogClose}
         selectedInterval={selectedInterval}
-        setSelectedInterval={setSelectedInterval}
+        selectedActivity={selectedActivity}
+        onIntervalChange={setSelectedInterval}
+        schedule={schedule}
+        onScheduleChange={setSchedule}
       />
     </section>
   );

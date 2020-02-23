@@ -13,8 +13,9 @@ const useStyles = makeStyles({
   }
 });
 
-export const PlanNewActivityForm = () => {
+export const PlanNewActivityForm = ({ value, onChange }) => {
   const classes = useStyles();
+
   return (
     <Card>
       <CardContent>
@@ -26,6 +27,8 @@ export const PlanNewActivityForm = () => {
           label="Название"
           size="small"
           margin="dense"
+          value={value}
+          onChange={e => onChange(e)}
         />
       </CardContent>
     </Card>
