@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DateTime, Interval } from "luxon";
+import { Interval } from "luxon";
 import { toast } from "react-toastify";
 import {
   Dialog,
@@ -106,15 +106,6 @@ export const PlanActivityDialog = ({
 
   function handleActivityChoice(activity) {
     setChosenActivity(activity);
-  }
-
-  function getCurrentIntervalStart() {
-    const currentTime = DateTime.local();
-    const difference = currentTime.minute % 15;
-    if (difference !== 0) {
-      return currentTime.minus({ minutes: difference });
-    }
-    return currentTime;
   }
 
   function handleActivityPlanning() {
@@ -260,7 +251,7 @@ export const PlanActivityDialog = ({
             inputVariant="outlined"
             size="small"
             onChange={handleIntervalStartChange}
-            value={selectedInterval.start || getCurrentIntervalStart()}
+            value={selectedInterval.start}
           />
           <ArrowRight className={classes.arrow} />
           <TimePicker
@@ -271,7 +262,7 @@ export const PlanActivityDialog = ({
             inputVariant="outlined"
             size="small"
             onChange={handleIntervalEndChange}
-            value={selectedInterval.end || getCurrentIntervalStart()}
+            value={selectedInterval.end}
           />
         </div>
         <ExpansionPanel

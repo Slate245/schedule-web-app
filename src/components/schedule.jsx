@@ -26,6 +26,15 @@ const useStyles = makeStyles({
   }
 });
 
+function getCurrentIntervalStart() {
+  const currentTime = DateTime.local().setZone("utc", { keepLocalTime: true });
+  const difference = currentTime.minute % 15;
+  if (difference !== 0) {
+    return currentTime.minus({ minutes: difference });
+  }
+  return currentTime;
+}
+
 export default function Schedule() {
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = useState(DateTime.local());
@@ -54,6 +63,11 @@ export default function Schedule() {
   };
 
   const handleDialogOpen = () => {
+    const currentIntervalStart = getCurrentIntervalStart();
+    setSelectedInterval({
+      start: currentIntervalStart,
+      end: currentIntervalStart
+    });
     setIsDialogOpen(true);
   };
 
