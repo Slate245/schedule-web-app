@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import { makeStyles } from "@material-ui/core/styles";
-import { getSchedule, createEmptySchedule } from "../services/scheduleService";
+import {
+  getSchedule,
+  createEmptySchedule,
+  updateSchedule
+} from "../services/scheduleService";
 import { Fab } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import { DatePicker } from "@material-ui/pickers";
@@ -27,7 +32,9 @@ const useStyles = makeStyles({
 });
 
 function getCurrentIntervalStart() {
-  const currentTime = DateTime.local().setZone("utc", { keepLocalTime: true });
+  const currentTime = DateTime.local()
+    .setZone("utc", { keepLocalTime: true })
+    .startOf("minute");
   const difference = currentTime.minute % 15;
   if (difference !== 0) {
     return currentTime.minus({ minutes: difference });
@@ -91,6 +98,27 @@ export default function Schedule() {
     setIsDialogOpen(true);
   };
 
+  const handleScheduleUpdate = async updatedSchedule => {
+    const originalSchedule = schedule;
+    setSchedule(updatedSchedule);
+
+    try {
+      await updateSchedule(updatedSchedule);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+        toast.error("This movie has already been deleted.");
+      }
+
+      setSchedule(originalSchedule);
+    }
+
+    //При создании нового расписания нужно обновить данные с сервера, чтобы иметь валидный ID
+    if (!updatedSchedule._id) {
+      const date = DateTime.fromISO(updatedSchedule.date);
+      setSelectedDate(date);
+    }
+  };
+
   return (
     <section className={classes.root}>
       <DatePicker
@@ -111,7 +139,7 @@ export default function Schedule() {
         selectedActivity={selectedActivity}
         onIntervalChange={setSelectedInterval}
         schedule={schedule}
-        onScheduleChange={setSchedule}
+        onScheduleChange={handleScheduleUpdate}
       />
     </section>
   );

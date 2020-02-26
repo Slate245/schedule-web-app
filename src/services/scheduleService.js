@@ -36,3 +36,13 @@ export function createEmptySchedule(date) {
   };
   return emptySchedule;
 }
+
+export function updateSchedule(schedule) {
+  if (schedule._id) {
+    const body = { ...schedule };
+    delete body._id;
+    return http.put(`${apiEndpoint}/${schedule._id}`, body);
+  }
+
+  return http.post(apiEndpoint, schedule);
+}
