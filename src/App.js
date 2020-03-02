@@ -80,7 +80,7 @@ function App() {
                 className={classes.rootWithNav}
               >
                 <Switch>
-                  <Route path="/schedule" component={Schedule} />
+                  <ProtectedRoute path="/schedule" component={Schedule} />
                   <ProtectedRoute path="/activities" component={Activities} />
                   <ProtectedRoute path="/settings" component={Settings} />
                   <Redirect from="/" exact to="/schedule" />

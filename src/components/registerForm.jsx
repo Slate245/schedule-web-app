@@ -13,6 +13,8 @@ import * as Yup from "yup";
 import { TextField } from "formik-material-ui";
 import { Link as RouterLink, Redirect } from "react-router-dom";
 import { UserContext } from "../utils/userContext";
+import { register } from "../services/userService";
+import { loginWithJwt } from "../services/authService";
 
 const useStyles = makeStyles({
   root: {
@@ -35,8 +37,16 @@ const useStyles = makeStyles({
   }
 });
 
-const handleSubmit = (values, { setSubmitting }) => {
-  console.log(values);
+const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+  try {
+    const response = await register(values);
+    const jwt = response.headers["authorization"].split(" ")[1];
+    loginWithJwt(jwt);
+    window.location = "/";
+  } catch (ex) {
+    const { data: message } = ex.response;
+    setErrors({ name: message });
+  }
   setSubmitting(false);
 };
 

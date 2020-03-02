@@ -11,8 +11,9 @@ import {
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { TextField } from "formik-material-ui";
-import { Link as RouterLink, Redirect } from "react-router-dom";
+import { Link as RouterLink, Redirect, useLocation } from "react-router-dom";
 import { UserContext } from "../utils/userContext";
+import { login } from "../services/authService";
 
 const useStyles = makeStyles({
   root: {
@@ -35,12 +36,27 @@ const useStyles = makeStyles({
   }
 });
 
-const handleLogin = (values, { setSubmitting }) => {
-  console.log(values);
-  setSubmitting(false);
-};
-
 const LoginForm = () => {
+  const location = useLocation();
+
+  const handleLogin = async (values, { setSubmitting, setErrors }) => {
+    try {
+      const { email, password } = values;
+      await login(email, password);
+
+      const { state } = location;
+      window.location = state ? state.from.pathname : "/";
+    } catch (ex) {
+      const { data: message } = ex.response;
+      setErrors({ email: message, password: message });
+    }
+    setSubmitting(false);
+  };
+
+  // const handleLogin = async (values, props) => {
+  //   console.log(props);
+  // };
+
   const { user } = useContext(UserContext);
   const classes = useStyles();
   if (user) return <Redirect to="/" />;
@@ -52,7 +68,9 @@ const LoginForm = () => {
         email: Yup.string()
           .email("Неверный адрес email")
           .required("Введите email"),
-        password: Yup.string().required("Введите пароль")
+        password: Yup.string()
+          .required("Введите пароль")
+          .min(5, "Пароль должен быть длиннее 4 символов")
       })}
       onSubmit={handleLogin}
     >
