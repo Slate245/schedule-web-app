@@ -24,7 +24,7 @@ import ProtectedRoute from "./components/common/protectedRoute";
 
 const useStyles = makeStyles({
   rootWithNav: {
-    marginBottom: "56px"
+    paddingBottom: "56px"
   },
   rootWithoutNav: {
     height: "100vh",
