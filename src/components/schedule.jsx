@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import React, { useState, useEffect, useContext } from "react";
 import { DateTime } from "luxon";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   getSchedule,
   createEmptySchedule,
   updateSchedule
 } from "../services/scheduleService";
+import { UserContext } from "../utils/userContext";
+import { toast } from "react-toastify";
+import { makeStyles } from "@material-ui/core/styles";
 import { Fab } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import { DatePicker } from "@material-ui/pickers";
@@ -43,10 +44,11 @@ function getCurrentIntervalStart() {
 }
 
 export default function Schedule() {
+  const { user } = useContext(UserContext);
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = useState(DateTime.local());
   const [schedule, setSchedule] = useState(
-    createEmptySchedule(DateTime.local())
+    createEmptySchedule(DateTime.local(), user)
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedInterval, setSelectedInterval] = useState({});
@@ -56,14 +58,14 @@ export default function Schedule() {
     const fetchData = async () => {
       const result = await getSchedule(selectedDate);
       if (!result.data) {
-        setSchedule(createEmptySchedule(selectedDate));
+        setSchedule(createEmptySchedule(selectedDate, user));
       } else {
         setSchedule(result.data);
       }
     };
 
     fetchData();
-  }, [selectedDate]);
+  }, [selectedDate, user]);
 
   const handleDateChange = date => {
     setSelectedDate(date);

@@ -1,7 +1,10 @@
 import { DateTime } from "luxon";
+import { getJwt } from "./authService";
 import http from "./httpService";
 
 const apiEndpoint = "/schedules";
+
+http.setJwt(getJwt());
 
 export function populateWorkingHours() {
   const from = 8;
@@ -22,7 +25,7 @@ export function getSchedule(date) {
   return http.get(scheduleUrl);
 }
 
-export function createEmptySchedule(date) {
+export function createEmptySchedule(date, user) {
   const emptySchedule = {
     date: DateTime.fromObject({
       hour: 0,
@@ -31,6 +34,7 @@ export function createEmptySchedule(date) {
       millisecond: 0,
       zone: "utc"
     }).toISO(),
+    ownerId: user._id,
     workingHours: populateWorkingHours(),
     plannedActivities: []
   };
