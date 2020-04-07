@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import {
   getSchedule,
   createEmptySchedule,
-  updateSchedule
+  updateSchedule,
 } from "../services/scheduleService";
 import { UserContext } from "../utils/userContext";
 import { toast } from "react-toastify";
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    paddingTop: "16px"
+    padding: "1rem 1rem 0",
   },
   fab: {
     backgroundColor: "white",
@@ -28,8 +28,8 @@ const useStyles = makeStyles({
     bottom: "56px",
     right: "0",
     margin: "0 16px 16px 0",
-    alignSelf: "flex-end"
-  }
+    alignSelf: "flex-end",
+  },
 });
 
 function getCurrentIntervalStart() {
@@ -67,7 +67,7 @@ export default function Schedule() {
     fetchData();
   }, [selectedDate, user]);
 
-  const handleDateChange = date => {
+  const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
@@ -75,7 +75,7 @@ export default function Schedule() {
     const currentIntervalStart = getCurrentIntervalStart();
     setSelectedInterval({
       start: currentIntervalStart,
-      end: currentIntervalStart
+      end: currentIntervalStart,
     });
     setIsDialogOpen(true);
   };
@@ -100,7 +100,7 @@ export default function Schedule() {
     setIsDialogOpen(true);
   };
 
-  const handleScheduleUpdate = async updatedSchedule => {
+  const handleScheduleUpdate = async (updatedSchedule) => {
     const originalSchedule = schedule;
     setSchedule(updatedSchedule);
 

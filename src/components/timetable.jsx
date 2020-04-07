@@ -8,7 +8,7 @@ import {
   TableRow,
   TableCell,
   Card,
-  CardActionArea
+  CardActionArea,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -19,29 +19,34 @@ const minutesInInterval = 15;
 const useStyles = makeStyles({
   cell: {
     padding: "0",
-    borderRight: "1px solid rgba(224, 224, 224, 1)"
+    borderRight: "1px solid rgba(224, 224, 224, 1)",
+    "&:last-child": {
+      borderRight: "none",
+    },
   },
   time: {
     width: "56px",
     lineHeight: "1",
-    borderRight: "1px solid rgba(224, 224, 224, 1)"
+    borderRight: "1px solid rgba(224, 224, 224, 1)",
+    paddingLeft: "0",
   },
   table: {
     tableLayout: "fixed",
-    minWidth: "340px"
+    minWidth: "340px",
+    marginTop: "0.5rem",
   },
   emptySlot: {
     height: "2.5rem",
     margin: "0 8px",
-    boxShadow: "none"
+    boxShadow: "none",
   },
   actionArea: {
-    height: "100%"
-  }
+    height: "100%",
+  },
 });
 
 const filterActivities = (activities, intervalToCheck) => {
-  return activities.filter(a => {
+  return activities.filter((a) => {
     const startLocal = DateTime.fromISO(a.allocatedInterval.start);
     const endLocal = DateTime.fromISO(a.allocatedInterval.end);
     const activityIntervalLocal = Interval.fromDateTimes(startLocal, endLocal);
@@ -58,7 +63,7 @@ const Timetable = ({ schedule, onIntervalSelect }) => {
   );
 
   function createHourRows(hours, activities) {
-    const hourRows = hours.map(hour => {
+    const hourRows = hours.map((hour) => {
       const hourStart = DateTime.fromISO(hour, { setZone: true });
       const currentHourInterval = Interval.after(hourStart, { hours: 1 });
       const activitiesThisHour = filterActivities(
@@ -78,10 +83,10 @@ const Timetable = ({ schedule, onIntervalSelect }) => {
 
     for (let i = 0; i < intervalsInHour; i++) {
       const currentIntervalStart = hourInterval.start.plus({
-        minutes: minutesInInterval * i
+        minutes: minutesInInterval * i,
       });
       const currentInterval = Interval.after(currentIntervalStart, {
-        minutes: minutesInInterval
+        minutes: minutesInInterval,
       });
 
       const activityInInterval = filterActivities(
@@ -101,7 +106,7 @@ const Timetable = ({ schedule, onIntervalSelect }) => {
               />
             </Card>
           ),
-          colspan: 1
+          colspan: 1,
         });
       } else {
         let numberOfSlots =
@@ -127,7 +132,7 @@ const Timetable = ({ schedule, onIntervalSelect }) => {
               }}
             />
           ),
-          colspan: numberOfSlots
+          colspan: numberOfSlots,
         });
 
         i += numberOfSlots - 1;
@@ -137,9 +142,9 @@ const Timetable = ({ schedule, onIntervalSelect }) => {
     return [
       {
         content: hourInterval.start.toFormat("H:mm"),
-        colspan: 1
+        colspan: 1,
       },
-      ...mappedIntervals
+      ...mappedIntervals,
     ];
   }
 
@@ -147,12 +152,12 @@ const Timetable = ({ schedule, onIntervalSelect }) => {
     <Table className={classes.table}>
       <TableHead />
       <TableBody>
-        {rows.map(row => (
+        {rows.map((row) => (
           <TableRow key={row[0].content}>
             {row.map((cell, index) => (
               <TableCell
                 key={index}
-                align="center"
+                align={index === 0 ? "right" : "center"}
                 className={index === 0 ? classes.time : classes.cell}
                 colSpan={cell.colspan}
               >
