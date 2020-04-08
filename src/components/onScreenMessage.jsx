@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, makeStyles } from "@material-ui/core";
+import { Typography, Container, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
   lowEmphasis: {
@@ -7,10 +7,15 @@ const useStyles = makeStyles({
   },
 });
 
-export const OnScreenMessage = ({ title, subtitle }) => {
+export const OnScreenMessage = ({
+  title,
+  subtitle,
+  containerClass,
+  maxWidth,
+}) => {
   const classes = useStyles();
   return (
-    <>
+    <Container maxWidth={maxWidth} className={containerClass}>
       <Typography
         className={classes.lowEmphasis}
         align="center"
@@ -26,6 +31,6 @@ export const OnScreenMessage = ({ title, subtitle }) => {
       >
         {subtitle}
       </Typography>
-    </>
+    </Container>
   );
 };

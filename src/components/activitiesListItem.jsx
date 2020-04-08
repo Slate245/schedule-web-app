@@ -3,28 +3,33 @@ import { ListItem, ListItemText, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
   list: {
-    width: "100%"
+    width: "100%",
   },
   listItem: {
     "&$selected": {
-      backgroundColor: "rgba(76, 175, 80, 0.38)"
+      backgroundColor: "rgba(76, 175, 80, 0.38)",
     },
     "&$selected:hover": {
-      backgroundColor: "rgba(76, 175, 80, 0.38)"
-    }
+      backgroundColor: "rgba(76, 175, 80, 0.38)",
+    },
   },
   selected: {},
   listItemText: {
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   duration: {
     whiteSpace: "nowrap",
-    marginLeft: "0.5rem"
-  }
+    marginLeft: "0.5rem",
+  },
 });
 
-export const ActivitiesListItem = ({ activity, onClick, selected }) => {
+export const ActivitiesListItem = ({
+  activity,
+  onClick,
+  selected,
+  shortenName,
+}) => {
   const { name, expectedDuration } = activity;
   const classes = useStyles();
   return (
@@ -37,12 +42,16 @@ export const ActivitiesListItem = ({ activity, onClick, selected }) => {
     >
       <ListItemText
         className={classes.listItemText}
-        primaryTypographyProps={{ variant: "subtitle2", component: "span" }}
+        primaryTypographyProps={{
+          variant: "subtitle2",
+          component: "span",
+          noWrap: shortenName,
+        }}
         primary={name}
         secondaryTypographyProps={{
           variant: "caption",
           component: "span",
-          className: classes.duration
+          className: classes.duration,
         }}
         secondary={`~ ${expectedDuration} мин.`}
       />
