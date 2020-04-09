@@ -1,13 +1,15 @@
 import React, { useEffect, useContext, useState } from "react";
-import { makeStyles, List } from "@material-ui/core";
+import { makeStyles, List, Fab } from "@material-ui/core";
+import { Add } from "@material-ui/icons";
 import { UserContext } from "../utils/userContext";
 import { getActivities } from "../services/activitiesService";
 import { OnScreenMessage } from "./onScreenMessage";
 import { ActivitiesListItem } from "./activitiesListItem";
+import { EditActivityDialog } from "./editActivityDialog";
 
 const useStyles = makeStyles({
   root: {
-    padding: "0 1rem 1rem",
+    padding: "0 1rem",
     minHeight: "calc(100vh - 56px)",
     minWidth: "340px",
     display: "flex",
@@ -19,6 +21,15 @@ const useStyles = makeStyles({
   list: {
     width: "100%",
   },
+  fab: {
+    backgroundColor: "white",
+    color: "#4CAF50",
+    position: "fixed",
+    bottom: "56px",
+    right: "0",
+    margin: "0 16px 16px 0",
+    alignSelf: "flex-end",
+  },
 });
 
 export default function Activities() {
@@ -26,6 +37,8 @@ export default function Activities() {
 
   const { user } = useContext(UserContext);
   const [activities, setActivities] = useState([]);
+  const [activityToEdit, setActivityToEdit] = useState({});
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,8 +50,18 @@ export default function Activities() {
     fetchData();
   }, [user]);
 
-  function handleActivityChoice() {
-    console.log("Choice!");
+  function handleActivityChoice(activity) {
+    setActivityToEdit(activity);
+    handleDialogOpen();
+  }
+
+  function handleDialogOpen() {
+    setIsDialogOpen(true);
+  }
+
+  function handleDialogClose() {
+    setActivityToEdit({});
+    setIsDialogOpen(false);
   }
 
   return (
@@ -62,6 +85,14 @@ export default function Activities() {
           maxWidth="xs"
         />
       )}
+      <Fab className={classes.fab} onClick={handleDialogOpen}>
+        <Add />
+      </Fab>
+      <EditActivityDialog
+        open={isDialogOpen}
+        onClose={handleDialogClose}
+        activity={activityToEdit}
+      />
     </section>
   );
 }
