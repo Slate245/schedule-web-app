@@ -13,7 +13,7 @@ import {
   Button,
   makeStyles,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from "@material-ui/core";
 import { ArrowRight, ExpandMore } from "@material-ui/icons";
 import { TimePicker } from "@material-ui/pickers";
@@ -27,42 +27,42 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     minWidth: "220px",
-    paddingBottom: "1rem"
+    paddingBottom: "1rem",
   },
   input: {
     "& input": {
-      width: "2.5rem"
-    }
+      width: "2.5rem",
+    },
   },
   arrow: {
     alignSelf: "center",
     margin: "0 1rem",
-    color: "rgba(0,0,0,0.54)"
+    color: "rgba(0,0,0,0.54)",
   },
   list: {
-    width: "100%"
+    width: "100%",
   },
   listItemText: {
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   duration: {
     whiteSpace: "nowrap",
-    marginLeft: "0.5rem"
+    marginLeft: "0.5rem",
   },
   expansion: {
-    marginBottom: "1rem"
+    marginBottom: "1rem",
   },
   summary: {
-    padding: "0 1rem"
+    padding: "0 1rem",
   },
   deleteButton: {
-    margin: "auto auto auto 0.5rem"
+    margin: "auto auto auto 0.5rem",
   },
   alertContainer: {
     marginBottom: "1rem",
-    display: "flex"
-  }
+    display: "flex",
+  },
 });
 
 export const PlanActivityDialog = ({
@@ -72,7 +72,7 @@ export const PlanActivityDialog = ({
   selectedActivity,
   onIntervalChange,
   schedule,
-  onScheduleChange
+  onScheduleChange,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -132,7 +132,7 @@ export const PlanActivityDialog = ({
 
     const areIntervalsIntersecting = () => {
       let result = false;
-      schedule.plannedActivities.forEach(a => {
+      schedule.plannedActivities.forEach((a) => {
         const { start: s, end: e } = a.allocatedInterval;
         const allocatedIntervalToCheck = Interval.fromISO(`${s}/${e}`);
         const selectedIntervalToCheck = Interval.fromISO(`${start}/${end}`);
@@ -161,17 +161,17 @@ export const PlanActivityDialog = ({
     );
     const plannedActivities = [
       ...schedule.plannedActivities.filter(
-        a =>
+        (a) =>
           a.allocatedInterval.start !==
             activityToPlan.allocatedInterval.start &&
           a.allocatedInterval.end !== activityToPlan.allocatedInterval.end
-      )
+      ),
     ];
 
     plannedActivities.push(activityToPlan);
     onScheduleChange({
       ...schedule,
-      plannedActivities
+      plannedActivities,
     });
     //TODO: Сделать отправку обновленного расписания на сервер в этом месте
 
@@ -184,13 +184,13 @@ export const PlanActivityDialog = ({
 
     const plannedActivities = [
       ...schedule.plannedActivities.filter(
-        a =>
+        (a) =>
           a.allocatedInterval.start !== start && a.allocatedInterval.end !== end
-      )
+      ),
     ];
     onScheduleChange({
       ...schedule,
-      plannedActivities
+      plannedActivities,
     });
 
     handleClose();
@@ -201,12 +201,12 @@ export const PlanActivityDialog = ({
       name,
       allocatedInterval: {
         start: start.toISO(),
-        end: end.toISO()
-      }
+        end: end.toISO(),
+      },
     };
   }
 
-  const handleInputChange = event => {
+  const handleInputChange = (event) => {
     const { value } = event.target;
     setChosenActivity({});
     setNewActivityName(value);
@@ -219,12 +219,12 @@ export const PlanActivityDialog = ({
     const { start, end } = selectedInterval;
     const ISODate = start.toISO().split("T")[0];
     const currentInterval = Interval.fromDateTimes(start, end);
-    return activities.filter(a => {
+    return activities.filter((a) => {
       const { start, end } = a.preferredInterval;
       const preferredInterval = Interval.fromISO(
         `${ISODate}T${start}/${ISODate}T${end}`,
         {
-          setZone: true
+          setZone: true,
         }
       );
       return preferredInterval.engulfs(currentInterval);
@@ -232,7 +232,13 @@ export const PlanActivityDialog = ({
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} fullScreen={fullScreen} fullWidth>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullScreen={fullScreen}
+      fullWidth
+      maxWidth="xs"
+    >
       <DialogTitle>Запланировать дело</DialogTitle>
       <DialogContent>
         {selectedActivity.name && (
@@ -278,7 +284,7 @@ export const PlanActivityDialog = ({
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <List dense className={classes.list}>
-              {filterActivitiesByInterval().map(a => (
+              {filterActivitiesByInterval().map((a) => (
                 <ActivitiesListItem
                   key={a._id}
                   activity={a}
