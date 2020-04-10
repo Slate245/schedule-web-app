@@ -6,6 +6,7 @@ import {
   updateSchedule,
 } from "../services/scheduleService";
 import { UserContext } from "../utils/userContext";
+import { getCurrentIntervalStart } from "../utils/getCurrentIntervalStart";
 import { toast } from "react-toastify";
 import { makeStyles } from "@material-ui/core/styles";
 import { Fab } from "@material-ui/core";
@@ -31,17 +32,6 @@ const useStyles = makeStyles({
     alignSelf: "flex-end",
   },
 });
-
-function getCurrentIntervalStart() {
-  const currentTime = DateTime.local()
-    .setZone("utc", { keepLocalTime: true })
-    .startOf("minute");
-  const difference = currentTime.minute % 15;
-  if (difference !== 0) {
-    return currentTime.minus({ minutes: difference });
-  }
-  return currentTime;
-}
 
 export default function Schedule() {
   const { user } = useContext(UserContext);
