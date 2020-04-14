@@ -173,7 +173,6 @@ export const PlanActivityDialog = ({
       ...schedule,
       plannedActivities,
     });
-    //TODO: Сделать отправку обновленного расписания на сервер в этом месте
 
     handleClose();
   }
