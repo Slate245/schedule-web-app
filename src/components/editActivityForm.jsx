@@ -1,8 +1,6 @@
 import React from "react";
-import { Formik, Field, Form, ErrorMessage, getIn } from "formik";
-import * as Yup from "yup";
+import { Field, Form, ErrorMessage, getIn } from "formik";
 import { DateTime } from "luxon";
-import { getCurrentIntervalStart } from "../utils/getCurrentIntervalStart";
 import {
   Typography,
   TextField as MuiTextField,
@@ -77,6 +75,7 @@ const TimePickerField = ({ field, form, ...rest }) => {
       size="small"
       error={Boolean(currentError)}
       onChange={(date) => {
+        //TODO: Сделать так, чтобы Yup нормально кушал даты
         form.setFieldValue(field.name, date, true);
       }}
     />
@@ -97,105 +96,74 @@ const Error = ({ children }) => {
   );
 };
 
-export const EditActivityForm = () => {
+export const EditActivityForm = ({
+  formikProps: { errors, touched, isSubmitting },
+  onChange,
+}) => {
   const classes = useStyles();
-  const currentTimeFormatted = getCurrentIntervalStart();
   return (
-    <Formik
-      initialValues={{
-        name: "",
-        from: currentTimeFormatted.toISO(),
-        to: currentTimeFormatted.plus({ hours: 1 }).startOf("hour").toISO(),
-        duration: 15,
-        description: "",
-      }}
-      validationSchema={Yup.object({
-        name: Yup.string().required("Не может быть пустым"),
-        from: Yup.date()
-          .required()
-          .min(
-            DateTime.utc().set({ hour: 8 }).startOf("hour").toISO(),
-            "Рабочие часы начинаются с 8:00"
-          ),
-        to: Yup.date()
-          .required()
-          .min(
-            Yup.ref("from"),
-            "Дело не может заканчиваться раньше, чем начинается"
-          )
-          .max(
-            DateTime.utc().set({ hour: 22 }).startOf("hour").toISO(),
-            "Рабочие часы заканчиваются в 22:00"
-          ),
-        duration: Yup.number().min(0, "Длительность должна быть больше 0"),
-        description: Yup.string(),
-      })}
-    >
-      {({ errors, touched, isSubmitting }) => (
-        <Form>
-          <Field
-            name="name"
-            component={TextField}
-            label="Название дела"
-            size="small"
-            type="text"
-            variant="outlined"
-            fullWidth
-            className={classes.input}
-          />
-          <div className={classes.container}>
-            <Field
-              name="from"
-              component={TimePickerField}
-              className={classes.timePicker}
-              label="С"
-            />
-            <ArrowRight className={classes.arrow} />
-            <Field
-              name="to"
-              component={TimePickerField}
-              className={classes.timePicker}
-              label="До"
-            />
-            <Field
-              component={DurationField}
-              name="duration"
-              label="Длительность"
-              size="small"
-              type="number"
-              variant="outlined"
-              className={classes.duration}
-              inputProps={{ step: 15, min: 0 }}
-            />
-          </div>
-          {errors.to && touched.to ? (
-            <ErrorMessage name="to" component={Error} />
-          ) : errors.from && touched.from ? (
-            <ErrorMessage name="from" component={Error} />
-          ) : errors.duration && touched.duration ? (
-            <ErrorMessage name="duration" component={Error} />
-          ) : (
-            <Typography
-              color="textSecondary"
-              variant="caption"
-              display="block"
-              className={classes.message}
-            >
-              Подходящее время и планируемая длительность
-            </Typography>
-          )}
-          <Field
-            component={TextField}
-            name="description"
-            label="Описание"
-            size="small"
-            type="text"
-            variant="outlined"
-            fullWidth
-            multiline
-          />
-        </Form>
+    <Form>
+      <Field
+        name="name"
+        component={TextField}
+        label="Название дела"
+        size="small"
+        type="text"
+        variant="outlined"
+        fullWidth
+        className={classes.input}
+      />
+      <div className={classes.container}>
+        <Field
+          name="from"
+          component={TimePickerField}
+          className={classes.timePicker}
+          label="С"
+        />
+        <ArrowRight className={classes.arrow} />
+        <Field
+          name="to"
+          component={TimePickerField}
+          className={classes.timePicker}
+          label="До"
+        />
+        <Field
+          component={DurationField}
+          name="duration"
+          label="Длительность"
+          size="small"
+          type="number"
+          variant="outlined"
+          className={classes.duration}
+          inputProps={{ step: 15, min: 0 }}
+        />
+      </div>
+      {errors.to && touched.to ? (
+        <ErrorMessage name="to" component={Error} />
+      ) : errors.from && touched.from ? (
+        <ErrorMessage name="from" component={Error} />
+      ) : errors.duration && touched.duration ? (
+        <ErrorMessage name="duration" component={Error} />
+      ) : (
+        <Typography
+          color="textSecondary"
+          variant="caption"
+          display="block"
+          className={classes.message}
+        >
+          Подходящее время и планируемая длительность
+        </Typography>
       )}
-    </Formik>
+      <Field
+        component={TextField}
+        name="description"
+        label="Описание"
+        size="small"
+        type="text"
+        variant="outlined"
+        fullWidth
+        multiline
+      />
+    </Form>
   );
 };

@@ -64,6 +64,10 @@ export default function Activities() {
     setIsDialogOpen(false);
   }
 
+  const handleActivityDelete = (activity) => {
+    console.log("Deleted:", activity);
+  };
+
   return (
     <section className={classes.root}>
       {activities.length > 0 ? (
@@ -92,6 +96,8 @@ export default function Activities() {
         open={isDialogOpen}
         onClose={handleDialogClose}
         activity={activityToEdit}
+        onEdit={setActivityToEdit}
+        onDelete={handleActivityDelete}
       />
     </section>
   );
