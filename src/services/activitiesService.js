@@ -42,3 +42,7 @@ export function getActivities(user) {
     ],
   });
 }
+
+export function updateActivities(updatedActivities) {
+  return Promise.resolve({ ...updatedActivities });
+}

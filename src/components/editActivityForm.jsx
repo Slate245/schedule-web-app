@@ -1,5 +1,5 @@
 import React from "react";
-import { Field, Form, ErrorMessage, getIn } from "formik";
+import { Field, Form, getIn } from "formik";
 import { DateTime } from "luxon";
 import {
   Typography,
@@ -75,7 +75,6 @@ const TimePickerField = ({ field, form, ...rest }) => {
       size="small"
       error={Boolean(currentError)}
       onChange={(date) => {
-        //TODO: Сделать так, чтобы Yup нормально кушал даты
         form.setFieldValue(field.name, date, true);
       }}
     />
@@ -97,7 +96,7 @@ const Error = ({ children }) => {
 };
 
 export const EditActivityForm = ({
-  formikProps: { errors, touched, isSubmitting },
+  formikProps: { errors, touched },
   onChange,
 }) => {
   const classes = useStyles();
@@ -138,12 +137,12 @@ export const EditActivityForm = ({
           inputProps={{ step: 15, min: 0 }}
         />
       </div>
-      {errors.to && touched.to ? (
-        <ErrorMessage name="to" component={Error} />
-      ) : errors.from && touched.from ? (
-        <ErrorMessage name="from" component={Error} />
+      {errors.from && touched.from ? (
+        <Error>{errors.from}</Error>
+      ) : errors.to && touched.to ? (
+        <Error>{errors.to}</Error>
       ) : errors.duration && touched.duration ? (
-        <ErrorMessage name="duration" component={Error} />
+        <Error>{errors.duration}</Error>
       ) : (
         <Typography
           color="textSecondary"

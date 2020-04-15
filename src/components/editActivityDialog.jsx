@@ -39,10 +39,10 @@ export const EditActivityDialog = ({
   const initalValues = {
     name: activity.name || "",
     from: activity.preferredInterval
-      ? DateTime.fromISO(activity.preferredInterval.start)
+      ? DateTime.fromISO(activity.preferredInterval.start, { setZone: true })
       : getCurrentIntervalStart(),
     to: activity.preferredInterval
-      ? DateTime.fromISO(activity.preferredInterval.end)
+      ? DateTime.fromISO(activity.preferredInterval.end, { setZone: true })
       : getCurrentIntervalStart().plus({ hours: 1 }).startOf("hour"),
     duration: activity.expectedDuration || 15,
     description: activity.description || "",
@@ -110,6 +110,16 @@ export const EditActivityDialog = ({
                   Удалить дело
                 </Button>
               )}
+              <Button color="primary" onClick={onClose}>
+                Закрыть
+              </Button>
+              <Button
+                color="primary"
+                onClick={() => onEdit(props.values)}
+                disabled={!props.dirty || !props.isValid || props.isSubmitting}
+              >
+                Сохранить
+              </Button>
             </DialogActions>
           </>
         )}
