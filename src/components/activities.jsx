@@ -116,8 +116,23 @@ export default function Activities() {
     }
   }
 
-  function handleActivityDelete(activity) {
-    console.log("Deleted:", activity);
+  async function handleActivityDelete(activity) {
+    const originalActivities = [...activities];
+    const updatedActivities = [...activities];
+
+    const index = updatedActivities.findIndex(
+      (a) => a._id === activityToEdit._id
+    );
+    updatedActivities.splice(index, 1);
+
+    handleDialogClose();
+    setActivities(updatedActivities);
+    try {
+      await updateActivities(updatedActivities);
+    } catch (ex) {
+      console.error(ex);
+      setActivities(originalActivities);
+    }
   }
 
   return (
