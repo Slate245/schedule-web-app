@@ -66,7 +66,9 @@ export const EditActivityDialog = ({
         DateTime.utc().set({ hour: 22 }).startOf("hour").toISO(),
         "Рабочие часы заканчиваются в 22:00"
       ),
-    duration: Yup.number().min(0, "Длительность должна быть больше 0"),
+    duration: Yup.number()
+      .min(0, "Длительность должна быть больше 0 минут")
+      .max(840, "Длительность должна быть меньше 840 минут"),
     description: Yup.string(),
   });
 
