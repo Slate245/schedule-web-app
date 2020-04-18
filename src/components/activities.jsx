@@ -2,7 +2,12 @@ import React, { useEffect, useContext, useState } from "react";
 import { makeStyles, List, Fab } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import { UserContext } from "../utils/userContext";
-import { getActivities, updateActivities } from "../services/activitiesService";
+import {
+  getActivities,
+  createActivity,
+  updateActivity,
+  deleteActivity,
+} from "../services/activitiesService";
 import { OnScreenMessage } from "./onScreenMessage";
 import { ActivitiesListItem } from "./activitiesListItem";
 import { EditActivityDialog } from "./editActivityDialog";
@@ -68,15 +73,16 @@ export default function Activities() {
     { name, from, to, duration, description },
     _id
   ) {
-    const preferredInterval = { start: from.toISOTime(), end: to.toISOTime() };
+    const preferredInterval = {
+      start: from.toISOTime({ suppressMilliseconds: true }),
+      end: to.toISOTime({ suppressMilliseconds: true }),
+    };
     const expectedDuration = duration === "" ? 0 : duration;
-    const ownerId = user._id;
     const activityObject = {
       name,
       preferredInterval,
       expectedDuration,
       description,
-      ownerId,
     };
     if (_id) {
       activityObject._id = _id;
@@ -94,22 +100,36 @@ export default function Activities() {
     if (Object.keys(activityToEdit).length === 0) {
       const newActivity = createActivityObject(formikValues);
       updatedActivities.push(newActivity);
-    } else {
-      //Обновление существующего дела
-      const updatedActivity = createActivityObject(
-        formikValues,
-        activityToEdit._id
-      );
-      const index = updatedActivities.findIndex(
-        (a) => a._id === activityToEdit._id
-      );
-      updatedActivities[index] = updatedActivity;
+
+      handleDialogClose();
+      setActivities([...updatedActivities]);
+      try {
+        const { data } = await createActivity(newActivity);
+        updatedActivities.splice(-1, 1, data);
+        setActivities([...updatedActivities]);
+        return;
+      } catch (ex) {
+        console.error(ex);
+        setActivities(originalActivities);
+        return;
+      }
     }
+    //Обновление существующего дела
+    const updatedActivity = createActivityObject(
+      formikValues,
+      activityToEdit._id
+    );
+    const index = updatedActivities.findIndex(
+      (a) => a._id === activityToEdit._id
+    );
+    updatedActivities[index] = updatedActivity;
 
     handleDialogClose();
-    setActivities(updatedActivities);
+    setActivities([...updatedActivities]);
     try {
-      await updateActivities(updatedActivities);
+      const { data } = await updateActivity(updatedActivity);
+      updatedActivities[index] = data;
+      setActivities([...updatedActivities]);
     } catch (ex) {
       console.error(ex);
       setActivities(originalActivities);
@@ -120,15 +140,15 @@ export default function Activities() {
     const originalActivities = [...activities];
     const updatedActivities = [...activities];
 
-    const index = updatedActivities.findIndex(
-      (a) => a._id === activityToEdit._id
-    );
+    const activityId = activityToEdit._id;
+
+    const index = updatedActivities.findIndex((a) => a._id === activityId);
     updatedActivities.splice(index, 1);
 
     handleDialogClose();
     setActivities(updatedActivities);
     try {
-      await updateActivities(updatedActivities);
+      await deleteActivity(activityId);
     } catch (ex) {
       console.error(ex);
       setActivities(originalActivities);
@@ -144,6 +164,7 @@ export default function Activities() {
               key={a._id || `${new Date().getTime()}-${a.name}`}
               activity={a}
               shortenName
+              disabled={!a._id}
               onClick={handleActivityChoice}
             />
           ))}

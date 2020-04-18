@@ -29,11 +29,13 @@ export const ActivitiesListItem = ({
   onClick,
   selected,
   shortenName,
+  disabled,
 }) => {
   const { name, expectedDuration } = activity;
   const classes = useStyles();
   return (
     <ListItem
+      disabled={disabled}
       button
       divider
       classes={{ root: classes.listItem, selected: classes.selected }}
