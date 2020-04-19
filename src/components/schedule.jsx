@@ -41,9 +41,7 @@ export default function Schedule() {
   const { user } = useContext(UserContext);
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = useState(DateTime.local());
-  const [schedule, setSchedule] = useState(
-    createEmptySchedule(DateTime.local(), user)
-  );
+  const [schedule, setSchedule] = useState({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedInterval, setSelectedInterval] = useState({});
   const [selectedActivity, setSelectedActivity] = useState({});
@@ -57,6 +55,7 @@ export default function Schedule() {
       } else {
         setSchedule(result.data);
       }
+      setLoading(false);
     };
 
     fetchData();
@@ -64,6 +63,7 @@ export default function Schedule() {
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    setLoading(true);
   };
 
   const handleDialogOpen = () => {

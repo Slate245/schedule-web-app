@@ -7,14 +7,13 @@ const apiEndpoint = "/schedules";
 http.setJwt(getJwt());
 
 export function populateWorkingHours() {
+  const date = arguments["date"] || DateTime.local();
   const from = 8;
   const to = 21;
   const workingHours = [];
   for (let i = from; i <= to; i++) {
     workingHours.push(
-      DateTime.utc()
-        .set({ hour: i, minute: 0, second: 0, millisecond: 0 })
-        .toISO()
+      date.set({ hour: i, minute: 0, second: 0, millisecond: 0 }).toISO()
     );
   }
   return workingHours;
@@ -26,17 +25,15 @@ export function getSchedule(date) {
 }
 
 export function createEmptySchedule(date, user) {
+  const formattedDate = date
+    .startOf("day")
+    .setZone("utc", { keepLocalTime: true });
+  console.log(date.startOf("day").setZone("utc", { keepLocalTime: true }));
   const emptySchedule = {
-    date: DateTime.fromObject({
-      hour: 0,
-      minute: 0,
-      second: 0,
-      millisecond: 0,
-      zone: "utc"
-    }).toISO(),
+    date: formattedDate.toISO(),
     ownerId: user._id,
-    workingHours: populateWorkingHours(),
-    plannedActivities: []
+    workingHours: populateWorkingHours(formattedDate),
+    plannedActivities: [],
   };
   return emptySchedule;
 }
