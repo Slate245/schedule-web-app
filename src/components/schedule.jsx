@@ -97,10 +97,7 @@ export default function Schedule() {
     try {
       await updateSchedule(updatedSchedule);
     } catch (ex) {
-      if (ex.response && ex.response.status === 404) {
-        toast.error("This movie has already been deleted.");
-      }
-
+      toast.error("Connection error. Please refresh the page");
       setSchedule(originalSchedule);
     }
 
