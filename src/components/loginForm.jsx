@@ -6,7 +6,7 @@ import {
   CardActions,
   Button,
   Typography,
-  Link
+  Link,
 } from "@material-ui/core";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -18,22 +18,22 @@ import { login } from "../services/authService";
 const useStyles = makeStyles({
   root: {
     width: "fit-content",
-    padding: "2rem 2rem 0 2rem"
+    padding: "2rem 2rem 0 2rem",
   },
   actions: {
     justifyContent: "flex-end",
-    marginTop: "2rem"
+    marginTop: "2rem",
   },
   inputContainer: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   input: {
-    marginBottom: "1.5rem"
+    marginBottom: "1.5rem",
   },
   link: {
-    textDecoration: "none"
-  }
+    textDecoration: "none",
+  },
 });
 
 const LoginForm = () => {
@@ -53,10 +53,6 @@ const LoginForm = () => {
     setSubmitting(false);
   };
 
-  // const handleLogin = async (values, props) => {
-  //   console.log(props);
-  // };
-
   const { user } = useContext(UserContext);
   const classes = useStyles();
   if (user) return <Redirect to="/" />;
@@ -70,7 +66,7 @@ const LoginForm = () => {
           .required("Введите email"),
         password: Yup.string()
           .required("Введите пароль")
-          .min(5, "Пароль должен быть длиннее 4 символов")
+          .min(5, "Пароль должен быть длиннее 4 символов"),
       })}
       onSubmit={handleLogin}
     >

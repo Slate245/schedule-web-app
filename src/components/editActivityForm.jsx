@@ -95,10 +95,7 @@ const Error = ({ children }) => {
   );
 };
 
-export const EditActivityForm = ({
-  formikProps: { errors, touched },
-  onChange,
-}) => {
+export const EditActivityForm = ({ formikProps: { errors, touched } }) => {
   const classes = useStyles();
   return (
     <Form>

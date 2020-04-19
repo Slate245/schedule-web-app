@@ -72,10 +72,6 @@ export const EditActivityDialog = ({
     description: Yup.string(),
   });
 
-  function handleActivityEdit() {
-    console.log("Activity edit!");
-  }
-
   return (
     <Dialog
       open={open}
@@ -97,10 +93,7 @@ export const EditActivityDialog = ({
               >
                 Введите или измените информацию о деле
               </Typography>
-              <EditActivityForm
-                formikProps={props}
-                onChange={handleActivityEdit}
-              />
+              <EditActivityForm formikProps={props} />
             </DialogContent>
             <DialogActions>
               {activity.name && (
