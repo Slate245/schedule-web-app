@@ -41,7 +41,9 @@ export default function Schedule() {
   const { user } = useContext(UserContext);
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = useState(DateTime.local());
-  const [schedule, setSchedule] = useState({});
+  const [schedule, setSchedule] = useState(
+    createEmptySchedule(selectedDate, user)
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedInterval, setSelectedInterval] = useState({});
   const [selectedActivity, setSelectedActivity] = useState({});
@@ -136,6 +138,7 @@ export default function Schedule() {
       <PlanActivityDialog
         open={isDialogOpen}
         onClose={handleDialogClose}
+        selectedDate={selectedDate}
         selectedInterval={selectedInterval}
         selectedActivity={selectedActivity}
         onIntervalChange={setSelectedInterval}

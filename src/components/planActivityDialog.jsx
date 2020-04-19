@@ -70,6 +70,7 @@ export const PlanActivityDialog = ({
   onClose,
   selectedInterval,
   selectedActivity,
+  selectedDate,
   onIntervalChange,
   schedule,
   onScheduleChange,
@@ -217,7 +218,7 @@ export const PlanActivityDialog = ({
       return [];
     }
     const { start, end } = selectedInterval;
-    const ISODate = start.toISO().split("T")[0];
+    const ISODate = selectedDate.toISO().split("T")[0];
     const currentInterval = Interval.fromDateTimes(start, end);
     return activities.filter((a) => {
       const { start, end } = a.preferredInterval;

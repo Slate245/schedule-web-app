@@ -54,11 +54,11 @@ const filterActivities = (activities, intervalToCheck) => {
   });
 };
 
-const Timetable = ({ schedule, onIntervalSelect }) => {
+function Timetable({ schedule, onIntervalSelect }) {
   const classes = useStyles();
 
   const rows = createHourRows(
-    schedule.workingHours || populateWorkingHours(),
+    schedule.workingHours || populateWorkingHours(schedule.date),
     schedule.plannedActivities || []
   );
 
@@ -169,6 +169,6 @@ const Timetable = ({ schedule, onIntervalSelect }) => {
       </TableBody>
     </Table>
   );
-};
+}
 
 export default Timetable;
