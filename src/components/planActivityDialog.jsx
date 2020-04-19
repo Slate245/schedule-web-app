@@ -81,6 +81,7 @@ export const PlanActivityDialog = ({
   const [activities, setActivities] = useState([]);
   const [chosenActivity, setChosenActivity] = useState({});
   const [newActivityName, setNewActivityName] = useState("");
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -234,6 +235,9 @@ export const PlanActivityDialog = ({
     <Dialog
       open={open}
       onClose={handleClose}
+      onEnter={() => {
+        setExpanded(filterActivitiesByInterval().length > 0);
+      }}
       fullScreen={fullScreen}
       fullWidth
       maxWidth="xs"
@@ -272,7 +276,11 @@ export const PlanActivityDialog = ({
         </div>
         <ExpansionPanel
           className={classes.expansion}
-          defaultExpanded={filterActivitiesByInterval().length > 0}
+          // expanded={filterActivitiesByInterval().length > 0}
+          expanded={expanded}
+          onChange={() => {
+            setExpanded(!expanded);
+          }}
           disabled={filterActivitiesByInterval().length === 0}
         >
           <ExpansionPanelSummary
