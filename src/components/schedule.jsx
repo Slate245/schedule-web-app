@@ -9,13 +9,13 @@ import { UserContext } from "../utils/userContext";
 import { getCurrentIntervalStart } from "../utils/getCurrentIntervalStart";
 import { toast } from "react-toastify";
 import { makeStyles } from "@material-ui/core/styles";
-import { Fab } from "@material-ui/core";
+import { Fab, Backdrop, CircularProgress } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import { DatePicker } from "@material-ui/pickers";
 import Timetable from "./timetable";
 import { PlanActivityDialog } from "./planActivityDialog";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
@@ -31,7 +31,11 @@ const useStyles = makeStyles({
     margin: "0 16px 16px 0",
     alignSelf: "flex-end",
   },
-});
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
+  },
+}));
 
 export default function Schedule() {
   const { user } = useContext(UserContext);
@@ -43,6 +47,7 @@ export default function Schedule() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedInterval, setSelectedInterval] = useState({});
   const [selectedActivity, setSelectedActivity] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,18 +98,30 @@ export default function Schedule() {
   const handleScheduleUpdate = async (updatedSchedule) => {
     const originalSchedule = schedule;
     setSchedule({ ...updatedSchedule });
-
+    if (!updatedSchedule._id) {
+      setLoading(true);
+    }
     try {
       const { data } = await updateSchedule(updatedSchedule);
       setSchedule({ ...data });
+      setLoading(false);
     } catch (ex) {
       toast.error("Connection error. Please refresh the page");
       setSchedule({ ...originalSchedule });
+      setLoading(false);
     }
   };
 
   return (
     <section className={classes.root}>
+      <Backdrop
+        className={classes.backdrop}
+        open={loading}
+        style={{ transitionDelay: "500ms" }}
+        unmountOnExit
+      >
+        <CircularProgress size="4rem" />
+      </Backdrop>
       <DatePicker
         label="Сегодня"
         value={selectedDate}
