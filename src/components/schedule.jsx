@@ -92,19 +92,14 @@ export default function Schedule() {
 
   const handleScheduleUpdate = async (updatedSchedule) => {
     const originalSchedule = schedule;
-    setSchedule(updatedSchedule);
+    setSchedule({ ...updatedSchedule });
 
     try {
-      await updateSchedule(updatedSchedule);
+      const { data } = await updateSchedule(updatedSchedule);
+      setSchedule({ ...data });
     } catch (ex) {
       toast.error("Connection error. Please refresh the page");
-      setSchedule(originalSchedule);
-    }
-
-    //При создании нового расписания нужно обновить данные с сервера, чтобы иметь валидный ID
-    if (!updatedSchedule._id) {
-      const date = DateTime.fromISO(updatedSchedule.date);
-      setSelectedDate(date);
+      setSchedule({ ...originalSchedule });
     }
   };
 
